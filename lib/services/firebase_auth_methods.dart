@@ -23,9 +23,18 @@ class FirebaseMethods{
 
       // Update user profile with first name and last name
       await userCredential.user?.updateDisplayName('$firstName $lastName');
-
+      await sendEmailVerification(context);
     }on FirebaseAuthException catch (e){
       showSnackBar(context, e.message!);
     }
   }
+
+  // Email Verification
+Future<void> sendEmailVerification(BuildContext context) async {
+    try{
+      _auth.currentUser?.sendEmailVerification();
+    }on FirebaseAuthException catch (e){
+      showSnackBar(context, e.message!);
+    }
+}
 }
