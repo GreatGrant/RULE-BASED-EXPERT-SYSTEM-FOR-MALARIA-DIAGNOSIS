@@ -1,8 +1,7 @@
 import 'package:go_router/go_router.dart';
-import 'package:untitled/screens/main.dart';
-
 import '../screens/admin_screen.dart';
 import '../screens/attendant_screen.dart';
+import '../main.dart';
 
 final router = GoRouter(
     routes: [
