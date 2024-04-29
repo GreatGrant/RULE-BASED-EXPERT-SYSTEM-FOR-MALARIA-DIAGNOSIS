@@ -83,8 +83,31 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
   }
 }
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void loginUser(String email, String password, BuildContext context) {
+    FirebaseMethods(FirebaseAuth.instance).loginWithEmail(
+        email: email,
+        password: password,
+        context: context
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +119,9 @@ class LoginForm extends StatelessWidget {
         children: [
           const Text("Sign in to your account.", style: TextStyle(fontSize: 16),),
           const SizedBox(height: 8),
-          const TextField(
-            decoration: InputDecoration(
+          TextField(
+            controller: _emailController,
+            decoration: const InputDecoration(
               hintText: 'Enter your email',
               labelText: 'Email',
               prefixIcon: Icon(Icons.email),
@@ -105,9 +129,10 @@ class LoginForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const TextField(
+          TextField(
             obscureText: true,
-            decoration: InputDecoration(
+            controller: _passwordController,
+            decoration: const InputDecoration(
               hintText: 'Enter your password',
               labelText: 'Password',
               prefixIcon: Icon(Icons.lock),
@@ -117,7 +142,9 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // Todo() Add login validation logic here
+              String email = _emailController.text;
+              String password = _passwordController.text;
+              loginUser(email, password, context);
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
@@ -142,6 +169,7 @@ class LoginForm extends StatelessWidget {
       ),
     );
   }
+
 }
 
 
@@ -183,6 +211,14 @@ class SignupFormState extends State
     );
   }
 
+@override
+  void dispose() {
+    super.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
