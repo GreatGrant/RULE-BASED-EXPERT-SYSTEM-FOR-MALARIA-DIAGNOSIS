@@ -11,7 +11,6 @@ import 'services/firebase_auth_methods.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize Firebase app
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MalariaApp());
 }
@@ -29,7 +28,8 @@ class MalariaApp extends StatelessWidget {
 }
 
 class LoginSignUpScreen extends StatefulWidget {
-  const LoginSignUpScreen({super.key});
+  final String title;
+  const LoginSignUpScreen({super.key, required this.title});
 
   @override
   LoginSignUpScreenState createState() => LoginSignUpScreenState();
@@ -49,81 +49,86 @@ class LoginSignUpScreenState extends State<LoginSignUpScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey[100],
-      appBar: AppBar(
-        title: const Text('Welcome', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blueGrey[900],
-      ),
       body: buildLoginSignUpUI(),
     );
   }
 
   Widget buildLoginSignUpUI() {
-    return Center(
-      child: Card(
-        margin: const EdgeInsets.all(30),
-        child: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data != null) {
-              UserHelper.saveUser(snapshot.data!);
-              return StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(snapshot.data?.uid)
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<DocumentSnapshot> snapshot) {
-                  if (snapshot.hasData && snapshot.data != null) {
-                    final userDoc = snapshot.data;
-                    final user = userDoc;
-                    if (user?['role'] == 'admin') {
-                      return const AdminScreen();
-                    } else {
-                      return const AttendantScreen();
-                    }
-                  } else {
-                    return const Material(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                },
-              );
-            }
-            return ListView(
-              shrinkWrap: true,
-              children: [
-                TabBar(
-                  controller: _tabController,
-                  tabs: const [
-                    Tab(text: 'Login'),
-                    Tab(text: 'Sign Up'),
-                  ],
-                  labelColor: Colors.blueGrey[900],
-                  indicatorColor: Colors.blueGrey[900],
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: const [
-                      LoginForm(),
-                      SignupForm(),
-                    ],
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          // User is authenticated, navigate to the appropriate screen
+          final userId = snapshot.data!.uid;
+          return StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection("users")
+                .doc(userId)
+                .snapshots(),
+            builder: (BuildContext context,
+                AsyncSnapshot<DocumentSnapshot> snapshot) {
+              if (snapshot.hasData && snapshot.data != null) {
+                final userDoc = snapshot.data;
+                final user = userDoc;
+                if (user?['role'] == 'admin') {
+                  return const AdminScreen(title: "Admin");
+                } else {
+                  return const AttendantScreen(title: "Attendant");
+                }
+              } else {
+                return const Material(
+                  child: Center(
+                    child: CircularProgressIndicator(),
                   ),
+                );
+              }
+            },
+          );
+        } else {
+          // User is not authenticated, show the login/signup UI
+          return Scaffold(
+            backgroundColor: Colors.blueGrey[100],
+            appBar: AppBar(
+              title: Text(widget.title, style: const TextStyle(color: Colors.white)),
+              backgroundColor: Colors.blueGrey[900],
+            ),
+            body: Card(
+              margin: const EdgeInsets.all(30),
+              child: SingleChildScrollView( // Wrap the Column with SingleChildScrollView
+                child: Column(
+                  children: [
+                    TabBar(
+                      controller: _tabController,
+                      tabs: const [
+                        Tab(text: 'Login'),
+                        Tab(text: 'Sign Up'),
+                      ],
+                      labelColor: Colors.blueGrey[900],
+                      indicatorColor: Colors.blueGrey[900],
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: const [
+                          LoginForm(),
+                          SignupForm(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            );
-          },
-        ),
-      ),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
+  const LoginForm({super.key});
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -216,7 +221,7 @@ class _LoginFormState extends State<LoginForm> {
 
 
 class SignupForm extends StatefulWidget {
-  const SignupForm({super.key});
+  const SignupForm({Key? key}) : super(key: key);
 
   @override
   SignupFormState createState() => SignupFormState();
