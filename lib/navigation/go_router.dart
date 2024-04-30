@@ -7,7 +7,7 @@ final router = GoRouter(
     routes: [
       GoRoute(
           path: '/',
-          builder: (context, state) => const LoginScreen()
+          builder: (context, state) => const LoginSignUpScreen()
       ),
       GoRoute(
           path: '/admin',

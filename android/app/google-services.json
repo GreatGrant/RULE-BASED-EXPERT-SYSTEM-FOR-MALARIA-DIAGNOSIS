@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "374836079434",
+    "project_id": "malaria-diagnosis-app",
+    "storage_bucket": "malaria-diagnosis-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374836079434:android:4d40b602d3867d79b2afb3",
+        "android_client_info": {
+          "package_name": "com.example.rbes_for_malaria_diagnosis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoXCQoYhoj7FTGKlgv__6lPpl8fWhAA5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

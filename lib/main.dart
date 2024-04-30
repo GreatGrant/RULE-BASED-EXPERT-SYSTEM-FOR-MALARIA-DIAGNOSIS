@@ -1,16 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/admin_screen.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/attendant_screen.dart';
 import 'firebase_options.dart';
 import 'navigation/go_router.dart';
 import 'services/firebase_auth_methods.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // initialize firebase app
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-  );
+  // Initialize Firebase app
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MalariaApp());
 }
 
@@ -26,14 +28,15 @@ class MalariaApp extends StatelessWidget {
   }
 }
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginSignUpScreen extends StatefulWidget {
+  const LoginSignUpScreen({super.key});
 
   @override
-  LoginScreenState createState() => LoginScreenState();
+  LoginSignUpScreenState createState() => LoginSignUpScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+class LoginSignUpScreenState extends State<LoginSignUpScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -50,33 +53,69 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
         title: const Text('Welcome', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blueGrey[900],
       ),
-      body: Center(
-        child: Card(
-          margin: const EdgeInsets.all(30),
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              TabBar(
-                controller: _tabController,
-                tabs: const [
-                  Tab(text: 'Login'),
-                  Tab(text: 'Sign Up'),
-                ],
-                labelColor: Colors.blueGrey[900],
-                indicatorColor: Colors.blueGrey[900],
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: TabBarView(
+      body: buildLoginSignUpUI(),
+    );
+  }
+
+  Widget buildLoginSignUpUI() {
+    return Center(
+      child: Card(
+        margin: const EdgeInsets.all(30),
+        child: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data != null) {
+              UserHelper.saveUser(snapshot.data!);
+              return StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(snapshot.data?.uid)
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.hasData && snapshot.data != null) {
+                    final userDoc = snapshot.data;
+                    final user = userDoc;
+                    if (user?['role'] == 'admin') {
+                      return const AdminScreen();
+                    } else {
+                      return const AttendantScreen();
+                    }
+                  } else {
+                    return const Material(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                },
+              );
+            }
+            return ListView(
+              shrinkWrap: true,
+              children: [
+                TabBar(
                   controller: _tabController,
-                  children: const [
-                    LoginForm(),
-                    SignupForm(),
+                  tabs: const [
+                    Tab(text: 'Login'),
+                    Tab(text: 'Sign Up'),
                   ],
+                  labelColor: Colors.blueGrey[900],
+                  indicatorColor: Colors.blueGrey[900],
                 ),
-              ),
-            ],
-          ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: const [
+                      LoginForm(),
+                      SignupForm(),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -84,7 +123,7 @@ class LoginScreenState extends State<LoginScreen> with SingleTickerProviderState
 }
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  const LoginForm({Key? key}) : super(key: key);
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -96,9 +135,9 @@ class _LoginFormState extends State<LoginForm> {
 
   void loginUser(String email, String password, BuildContext context) {
     FirebaseMethods(FirebaseAuth.instance).loginWithEmail(
-        email: email,
-        password: password,
-        context: context
+      email: email,
+      password: password,
+      context: context,
     );
   }
 
@@ -117,7 +156,10 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text("Sign in to your account.", style: TextStyle(fontSize: 16),),
+          const Text(
+            "Sign in to your account.",
+            style: TextStyle(fontSize: 16),
+          ),
           const SizedBox(height: 8),
           TextField(
             controller: _emailController,
@@ -153,23 +195,23 @@ class _LoginFormState extends State<LoginForm> {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            child: const Text('Login', style: TextStyle(color:  Colors.white),),
+            child: const Text('Login', style: TextStyle(color: Colors.white)),
           ),
           const SizedBox(height: 8,),
           TextButton(
-            onPressed: () {  },
-            child: Text("Forgot Password?",
-                style: TextStyle(
-                    color: Colors.blueGrey[900],
-                    fontWeight: FontWeight.bold
-                ),
+            onPressed: () {},
+            child: Text(
+              "Forgot Password?",
+              style: TextStyle(
+                color: Colors.blueGrey[900],
+                fontWeight: FontWeight.bold,
+              ),
             ),
           )
         ],
       ),
     );
   }
-
 }
 
 
@@ -180,8 +222,7 @@ class SignupForm extends StatefulWidget {
   SignupFormState createState() => SignupFormState();
 }
 
-class SignupFormState extends State
-{
+class SignupFormState extends State<SignupForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -200,18 +241,20 @@ class SignupFormState extends State
     return null;
   }
 
-  void signUpUser(String firstName, String lastName, String email, String password, BuildContext context) {
+  void signUpUser(String firstName, String lastName, String email,
+      String password, BuildContext context) {
     FirebaseMethods(
-        FirebaseAuth.instance).signUpWithEmailAndPassword(
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password,
-        context: context,
+      FirebaseAuth.instance,
+    ).signUpWithEmailAndPassword(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+      context: context,
     );
   }
 
-@override
+  @override
   void dispose() {
     super.dispose();
     _firstNameController.dispose();
@@ -237,7 +280,8 @@ class SignupFormState extends State
                   prefixIcon: Icon(Icons.book),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter your first name' : null,
+                validator: (value) =>
+                value!.isEmpty ? 'Please enter your first name' : null,
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -247,7 +291,8 @@ class SignupFormState extends State
                   prefixIcon: Icon(Icons.book),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter your last name' : null,
+                validator: (value) =>
+                value!.isEmpty ? 'Please enter your last name' : null,
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -259,7 +304,7 @@ class SignupFormState extends State
                   prefixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(),
                 ),
-                validator: _validateEmail
+                validator: _validateEmail,
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -271,7 +316,8 @@ class SignupFormState extends State
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please enter your password' : null,
+                validator: (value) =>
+                value!.isEmpty ? 'Please enter your password' : null,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -282,17 +328,29 @@ class SignupFormState extends State
                     String lastName = _lastNameController.text;
                     String email = _emailController.text;
                     String password = _passwordController.text;
-                    signUpUser(firstName, lastName, email, password, context);
+                    signUpUser(
+                      firstName,
+                      lastName,
+                      email,
+                      password,
+                      context,
+                    );
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 15,
+                  ),
                   backgroundColor: Colors.blueGrey[900],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text('Sign Up', style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Sign Up',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),
@@ -300,5 +358,4 @@ class SignupFormState extends State
       ),
     );
   }
-
 }
