@@ -5,11 +5,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/attendant_screen.dart';
-import 'package:rbes_for_malaria_diagnosis/services/auth_service.dart';
 import 'firebase_options.dart';
 import 'navigation/go_router.dart';
 import 'services/firebase_auth_methods.dart';
 
+// main main
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -59,33 +59,34 @@ class LoginSignUpScreenState extends State<LoginSignUpScreen>
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
-          // User is authenticated
-          UserHelper.saveUser(snapshot.data!);
-
+          // User is authenticated, navigate to the appropriate screen
+          final userId = snapshot.data!.uid;
           return StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore
-                .instance
+            stream: FirebaseFirestore.instance
                 .collection("users")
-                .doc(snapshot.data?.uid)
+                .doc(userId)
                 .snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
-              if(snapshot.hasData && snapshot.data != null) {
+            builder: (BuildContext context,
+                AsyncSnapshot<DocumentSnapshot> snapshot) {
+              if (snapshot.hasData && snapshot.data != null) {
                 final userDoc = snapshot.data;
                 final user = userDoc;
-                if(user?['role'] == 'admin') {
-                  return const AdminScreen(title: 'Admin Panel',);
+                if (user?['role'] == 'admin') {
+                  return const AdminScreen(title: "Admin");
                 } else {
-                  return const AttendantScreen(title: 'Attendants',);
+                  return const AttendantScreen(title: "Attendant");
                 }
               } else {
                 return const Material(
-                  child: Center(child: CircularProgressIndicator(),),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               }
-             },
+            },
           );
-        }
-                // User is not authenticated, show the login/signup UI
+        } else {
+          // User is not authenticated, show the login/signup UI
           return Scaffold(
             backgroundColor: Colors.blueGrey[100],
             appBar: AppBar(
@@ -122,6 +123,7 @@ class LoginSignUpScreenState extends State<LoginSignUpScreen>
             ),
           );
         }
+      },
     );
   }
 }
@@ -138,10 +140,10 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController _passwordController = TextEditingController();
 
   void loginUser(String email, String password, BuildContext context) {
-    AuthService.signInWithEmail(
-        context: context,
-        email: email,
-        password: password
+    FirebaseMethods(FirebaseAuth.instance).loginWithEmail(
+      email: email,
+      password: password,
+      context: context,
     );
   }
 
@@ -233,18 +235,6 @@ class SignupFormState extends State<SignupForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-
-  void signUpUser(String firstName, String lastName, String email,
-      String password, BuildContext context) {
-    AuthService.signupWithEmail(
-        email: email,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
-        context: context
-    );
-  }
-
   String? _validateEmail(String? email) {
     if (email == null || email.isEmpty) {
       return 'Please enter your email';
@@ -255,6 +245,19 @@ class SignupFormState extends State<SignupForm> {
       return 'Please enter a valid email';
     }
     return null;
+  }
+
+  void signUpUser(String firstName, String lastName, String email,
+      String password, BuildContext context) {
+    FirebaseMethods(
+      FirebaseAuth.instance,
+    ).signUpWithEmailAndPassword(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+      context: context,
+    );
   }
 
   @override
