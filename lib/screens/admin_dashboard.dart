@@ -5,13 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore package
 import 'package:rbes_for_malaria_diagnosis/util/show_snackbar.dart';
 import '../models/user_info.dart';
-import '../services/firebase_auth_methods.dart';
 import '../services/patient_helper.dart';
 import '../services/user_helper.dart';
 import '../widgets/user_event_tab_bar_view.dart';
 
 class AdminDashboard extends StatefulWidget {
-  const AdminDashboard({Key? key}) : super(key: key);
+  const AdminDashboard({super.key});
 
   @override
   _AdminDashboardState createState() => _AdminDashboardState();

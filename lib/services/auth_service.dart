@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rbes_for_malaria_diagnosis/services/firebase_auth_methods.dart';
 import 'package:rbes_for_malaria_diagnosis/util/show_snackbar.dart';
 
 class AuthService {
@@ -18,7 +17,7 @@ class AuthService {
           password: password
       );
 
-     return userCredential.user;
+      return userCredential.user;
     }on FirebaseAuthException catch(e){
       if(!context.mounted) return;
       showSnackBar(context, e.message!);
@@ -51,4 +50,3 @@ class AuthService {
     return _auth.signOut();
   }
 }
-

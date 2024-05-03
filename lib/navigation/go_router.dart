@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
-import '../screens/admin_screen.dart';
-import '../screens/attendant_screen.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard.dart';
+import '../screens/diagnosis_screen.dart';
 import '../main.dart';
 
 final router = GoRouter(
@@ -12,12 +12,12 @@ final router = GoRouter(
       GoRoute(
           path: '/admin',
           name: 'admin',
-          builder: (context, state) => const AdminScreen(title: "Admin")
+          builder: (context, state) => const AdminDashboard()
       ),
       GoRoute(
           path: '/attendant',
           name: 'attendant',
-          builder: (context, state) => const AttendantScreen(title: "Attendant")
+          builder: (context, state) => const DiagnosisScreen(title: "Attendant")
       )
     ]
 );

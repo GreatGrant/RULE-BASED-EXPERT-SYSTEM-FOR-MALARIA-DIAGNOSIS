@@ -4,24 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard.dart';
-import 'package:rbes_for_malaria_diagnosis/screens/admin_screen.dart';
-import 'package:rbes_for_malaria_diagnosis/screens/attendant_screen.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/services/auth_service.dart';
 import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
 import 'firebase_options.dart';
 import 'navigation/go_router.dart';
-import 'services/firebase_auth_methods.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MalariaApp());
+  runApp(const MalariaApp());
 }
 
 class MalariaApp extends StatelessWidget {
-   MalariaApp({super.key});
+  const MalariaApp({super.key});
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: router,
@@ -58,36 +56,36 @@ class LoginSignUpScreenState extends State<LoginSignUpScreen>
 
   Widget buildLoginSignUpUI() {
     return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
-          // User is authenticated
-          UserHelper.saveUser(snapshot.data!);
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data != null) {
+            // User is authenticated
+            UserHelper.saveUser(snapshot.data!);
 
-          return StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore
-                .instance
-                .collection("users")
-                .doc(snapshot.data?.uid)
-                .snapshots(),
-            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
-              if(snapshot.hasData && snapshot.data != null) {
-                final userDoc = snapshot.data;
-                final user = userDoc;
-                if(user?['role'] == 'admin') {
-                  return const AdminDashboard();
+            return StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore
+                  .instance
+                  .collection("users")
+                  .doc(snapshot.data?.uid)
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                if(snapshot.hasData && snapshot.data != null) {
+                  final userDoc = snapshot.data;
+                  final user = userDoc;
+                  if(user?['role'] == 'admin') {
+                    return const AdminDashboard();
+                  } else {
+                    return const DiagnosisScreen(title: 'Attendants',);
+                  }
                 } else {
-                  return const AttendantScreen(title: 'Attendants',);
+                  return const Material(
+                    child: Center(child: CircularProgressIndicator(),),
+                  );
                 }
-              } else {
-                return const Material(
-                  child: Center(child: CircularProgressIndicator(),),
-                );
-              }
-             },
-          );
-        }
-                // User is not authenticated, show the login/signup UI
+              },
+            );
+          }
+          // User is not authenticated, show the login/signup UI
           return Scaffold(
             backgroundColor: Colors.blueGrey[100],
             appBar: AppBar(
