@@ -169,21 +169,120 @@ class _AdminDashboardState extends State<AdminDashboard>
 
     await showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (BuildContext context) {
         return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: _selectedTab == 'staff'
-                  ? _buildStaffFormFields(context, firstNameController, lastNameController, emailController)
-                  : _buildPatientsFormFields(context, firstNameController, lastNameController, registrationNoController, selectedDate, resultController),
+          child: Container(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
+            child: _selectedTab == 'staff'
+                ? _buildStaffBottomSheet(
+                context, firstNameController, lastNameController, emailController)
+                : _buildPatientBottomSheet(
+                context,
+                firstNameController,
+                lastNameController,
+                registrationNoController,
+                selectedDate,
+                resultController),
           ),
         );
       },
     );
   }
+
+  Widget _buildStaffBottomSheet(
+      BuildContext context,
+      TextEditingController firstNameController,
+      TextEditingController lastNameController,
+      TextEditingController emailController) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextField(
+          controller: firstNameController,
+          decoration: const InputDecoration(labelText: 'First Name'),
+        ),
+        TextField(
+          controller: lastNameController,
+          decoration: const InputDecoration(labelText: 'Last Name'),
+        ),
+        TextField(
+          controller: emailController,
+          decoration: const InputDecoration(labelText: 'Email'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            _saveStaffData(
+              firstNameController.text.trim(),
+              lastNameController.text.trim(),
+              emailController.text.trim(),
+            );
+            Navigator.pop(context);
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPatientBottomSheet(
+      BuildContext context,
+      TextEditingController firstNameController,
+      TextEditingController lastNameController,
+      TextEditingController registrationNoController,
+      DateTime selectedDate,
+      TextEditingController resultController) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextField(
+          controller: firstNameController,
+          decoration: const InputDecoration(labelText: 'First Name'),
+        ),
+        TextField(
+          controller: lastNameController,
+          decoration: const InputDecoration(labelText: 'Last Name'),
+        ),
+        TextField(
+          readOnly: true,
+          controller: TextEditingController(text: selectedDate.toString()),
+          decoration: const InputDecoration(labelText: 'Date'),
+          onTap: () async {
+            final DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
+            if (pickedDate != null && pickedDate != selectedDate) {
+              setState(() {
+                selectedDate = pickedDate;
+              });
+            }
+          },
+        ),
+        TextField(
+          controller: resultController,
+          decoration: const InputDecoration(labelText: 'Result'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            _savePatientData(
+              firstNameController.text.trim(),
+              lastNameController.text.trim(),
+              selectedDate,
+              resultController.text.trim(),
+            );
+            Navigator.pop(context);
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
+  }
+
 
   List<Widget> _buildStaffFormFields(BuildContext context, TextEditingController firstNameController, TextEditingController lastNameController, TextEditingController emailController) {
     return [
