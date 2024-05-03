@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/event.dart';
+import '../models/user_info.dart';
 
 class GuestListTab extends StatelessWidget {
   const GuestListTab({super.key});

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:rbes_for_malaria_diagnosis/models/event.dart';
+import 'package:rbes_for_malaria_diagnosis/models/user_info.dart';
 
 import '../widgets/comment_tab.dart';
 import '../widgets/event_detail.dart';
 import '../widgets/guest_list_tab.dart';
 
 class EventDetail extends StatefulWidget {
-  final Event event;
+  final UserInfo event;
   const EventDetail({super.key, required this.event});
 
   @override
@@ -72,7 +72,7 @@ class _EventDetailState extends State<EventDetail>
               height: 50.0,
               child: Row(
                 children: [
-                  Text((widget.event.date).toString(),
+                  Text("Date",
                       style: theme.textTheme.bodyMedium),
                   const SizedBox(width: 15.0),
                   Expanded(
@@ -82,7 +82,7 @@ class _EventDetailState extends State<EventDetail>
                     ),
                   ),
                   const SizedBox(width: 15.0),
-                  Text(widget.event.time, style: theme.textTheme.bodyText2),
+                  Text("Time", style: theme.textTheme.bodyMedium),
                 ],
               ),
             ),
@@ -91,14 +91,14 @@ class _EventDetailState extends State<EventDetail>
               margin: const EdgeInsets.only(left: 18.0),
               child: Text(
                 widget.event.title,
-                style: theme.textTheme.headline2,
+                style: theme.textTheme.displayMedium,
               ),
             ),
             const SizedBox(height: 15.0),
             TabBar(
               controller: _controller,
-              labelStyle: theme.textTheme.headline4,
-              unselectedLabelStyle: theme.textTheme.subtitle1,
+              labelStyle: theme.textTheme.headlineMedium,
+              unselectedLabelStyle: theme.textTheme.titleMedium,
               isScrollable: true,
               indicatorColor: theme.primaryColor,
               indicatorSize: TabBarIndicatorSize.label,

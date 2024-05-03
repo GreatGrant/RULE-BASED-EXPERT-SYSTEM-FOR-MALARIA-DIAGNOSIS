@@ -1,27 +1,18 @@
 
 import 'package:equatable/equatable.dart';
 
-class Event extends Equatable {
+class UserInfo extends Equatable {
   final String title;
-  final DateTime date;
-  final String time;
   final String image;
-  final bool isActive;
-  const Event({
-    required this.time,
-    required this.date,
+  const UserInfo({
     required this.title,
     required this.image,
-    required this.isActive,
   });
 
   @override
   List<Object> get props => [
     title,
-    date,
-    time,
     image,
-    isActive,
   ];
 }
 
@@ -90,42 +81,27 @@ List<Friend> friendList = [
   ),
 ];
 
-List<Event> upcommingList = [
-  Event(
-    title: "Register",
-    date: DateTime(12, 1, 2019),
-    time: "10:30 - 14:00",
+List<UserInfo> staffManagementList = [
+  const UserInfo(
+    title: "Register Staff",
     image: "assets/6.jpg",
-    isActive: true,
   ),
-  Event(
+  const UserInfo(
     title: "Manage Staff",
-    date: DateTime(25, 12, 2019),
-    time: "08:00 - 10:00",
     image: "assets/6.jpg",
-    isActive: false,
   ),
 ];
-List<Event> pastList = [
-  Event(
-    title: "Register",
-    date: DateTime(02, 03, 2020),
-    time: "10:00 - 01:00",
+List<UserInfo> patientManagementList = [
+  const UserInfo(
+    title: "Register Patients",
     image: "assets/6.jpg",
-    isActive: false,
   ),
-  Event(
-    title: "Manage",
-    date: DateTime(05, 03, 2020),
-    time: "00:00 - 01:00",
+  const UserInfo(
+    title: "Manage Patients",
     image: "assets/6.jpg",
-    isActive: false,
   ),
-  Event(
-    title: "Diagnose",
-    date: DateTime(15, 03, 2020),
-    time: "08:00 - 10:00",
+  const UserInfo(
+    title: "Diagnose Patients",
     image: "assets/6.jpg",
-    isActive: false,
   ),
 ];

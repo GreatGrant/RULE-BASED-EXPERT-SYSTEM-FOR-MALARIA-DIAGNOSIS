@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/event.dart';
+import '../models/user_info.dart';
 
 class CommentsTab extends StatelessWidget {
   const CommentsTab({super.key});

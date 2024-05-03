@@ -1,10 +1,10 @@
-import 'package:rbes_for_malaria_diagnosis/models/event.dart';
+import 'package:rbes_for_malaria_diagnosis/models/user_info.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_details.dart';
 import 'package:flutter/material.dart';
 
-class EventCard extends StatelessWidget {
-  final Event event;
-  const EventCard({super.key, required this.event});
+class UserEventCard extends StatelessWidget {
+  final UserInfo event;
+  const UserEventCard({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -23,30 +23,30 @@ class EventCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
-          color: event.isActive ? theme.primaryColor : theme.cardColor,
+          color: Colors.blueGrey[900],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Icon(
-              event.title == "Register"
+              event.title.contains("Register")
                   ? Icons.app_registration
                   : Icons.health_and_safety,
               size: 25.0,
-              color: event.isActive ? Colors.white : theme.primaryColor,
+              color: Colors.white,
             ),
             Text(
               event.title,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: event.isActive ? Colors.white : null,
+                color: Colors.white,
                 fontSize: 20
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20.0,
               child: Divider(
-                color:event.isActive? Colors.white : theme.primaryColor,
+                color: Colors.white,
                 thickness: 5,
               ),
             ),

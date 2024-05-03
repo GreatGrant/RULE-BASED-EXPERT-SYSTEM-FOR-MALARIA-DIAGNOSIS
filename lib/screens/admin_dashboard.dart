@@ -1,12 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore package
 import 'package:rbes_for_malaria_diagnosis/util/show_snackbar.dart';
-import '../models/event.dart';
+import '../models/user_info.dart';
 import '../services/firebase_auth_methods.dart';
 import '../services/patient_helper.dart';
 import '../services/user_helper.dart';
-import '../widgets/event_tab_bar_view.dart';
+import '../widgets/user_event_tab_bar_view.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({Key? key}) : super(key: key);
@@ -37,7 +39,9 @@ class _AdminDashboardState extends State<AdminDashboard>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
+      drawer: _buildDrawer(context),
+      backgroundColor: Colors.blueGrey[100],
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -68,9 +72,14 @@ class _AdminDashboardState extends State<AdminDashboard>
                         Text(_selectedTab == 'staff' ? "Registered Staff" : "Registered Patients",
                             style: theme.textTheme.titleMedium),
                         const Spacer(),
-                        Text(
-                          "+ Add new",
-                          style: theme.textTheme.titleMedium,
+                        GestureDetector(
+                          onTap: (){
+                            _showAddBottomSheet(context);
+                          },
+                          child: Text(
+                            "+ Add new",
+                            style: theme.textTheme.titleMedium,
+                          ),
                         )
                       ],
                     ),
@@ -92,11 +101,12 @@ class _AdminDashboardState extends State<AdminDashboard>
                             var user = users[index];
                             return ListTile(
                               leading: CircleAvatar(
+                                backgroundColor: Colors.blueGrey[100],
                                 radius: 27.0,
                                 // Set the user's image here
                                 child:
-                                _selectedTab == 'patients' ? const Icon(Icons.local_hospital) // Icon for patients
-                                    : const Icon(Icons.work), // Icon for staff
+                                _selectedTab == 'patients' ? Icon(Icons.local_hospital, color: Colors.blueGrey[900]) // Icon for patients
+                                    : Icon(Icons.work, color: Colors.blueGrey[900]), // Icon for staff
                               ),
                               title: Text(
                                 user['name'] ?? '',
@@ -135,7 +145,7 @@ class _AdminDashboardState extends State<AdminDashboard>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () { _showAddBottomSheet(context);  },
-        backgroundColor: theme.primaryColor,
+        backgroundColor: Colors.blueGrey[900],
         child: const Icon(
           Icons.add,
           color: Colors.white,
@@ -319,8 +329,8 @@ class _AdminDashboardState extends State<AdminDashboard>
       child: TabBarView(
         controller: _controller,
         children: [
-          EventTabBarView(events: upcommingList),
-          EventTabBarView(events: pastList),
+          UserEventTabBarView(events: staffManagementList),
+          UserEventTabBarView(events: patientManagementList),
         ],
       ),
     );
@@ -335,10 +345,10 @@ class _AdminDashboardState extends State<AdminDashboard>
         labelStyle: theme.textTheme.headlineMedium,
         unselectedLabelStyle: theme.textTheme.titleMedium,
         isScrollable: true,
-        indicatorColor: theme.primaryColor,
+        indicatorColor: Colors.blueGrey[900],
         indicatorSize: TabBarIndicatorSize.label,
-        labelColor: theme.primaryColor,
-        unselectedLabelColor: Colors.red,
+        labelColor: Colors.blueGrey[900],
+        unselectedLabelColor: Colors.blueGrey[500],
         tabs: const [
           Tab(text: "Staff"),
           Tab(text: "Patients"),
@@ -379,7 +389,7 @@ class _AdminDashboardState extends State<AdminDashboard>
     );
   }
 
-  PreferredSize _buildAppBar() {
+  PreferredSize _buildAppBar(BuildContext context) {
     return PreferredSize(
       preferredSize: const Size.fromHeight(70.0),
       child: SafeArea(
@@ -390,15 +400,58 @@ class _AdminDashboardState extends State<AdminDashboard>
           ),
           child: Row(
             children: [
-              Image.asset(
-                "assets/logo.png",
-                width: 120.0,
-                height: 60,
+              IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              ),
+              Text(
+                "Admin Dashboard",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueGrey[900],
+                ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+
+  Drawer _buildDrawer(BuildContext context) {
+  return Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        DrawerHeader(
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+          ),
+          child: const Text(
+            'Menu',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+            ),
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.logout),
+          title: const Text('Logout'),
+          onTap: () {
+            _logout(context);
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+void _logout(BuildContext context) async{
+  UserHelper.logOut();
   }
 }

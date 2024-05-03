@@ -15,13 +15,13 @@ import 'services/firebase_auth_methods.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MalariaApp());
+  runApp(MalariaApp());
 }
 
 class MalariaApp extends StatelessWidget {
-  const MalariaApp({super.key});
+   MalariaApp({super.key});
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: router,

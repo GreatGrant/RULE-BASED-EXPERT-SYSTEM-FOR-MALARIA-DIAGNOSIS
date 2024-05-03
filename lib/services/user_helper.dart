@@ -116,4 +116,8 @@ class UserHelper {
       });
     }
   }
+
+  static logOut() async {
+    return _auth.signOut();
+  }
 }

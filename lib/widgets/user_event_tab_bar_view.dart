@@ -1,12 +1,12 @@
-import 'package:rbes_for_malaria_diagnosis/models/event.dart';
+import 'package:rbes_for_malaria_diagnosis/models/user_info.dart';
 import 'package:flutter/material.dart';
 
 import 'event_card.dart';
 
-class EventTabBarView extends StatelessWidget {
-  final List<Event> events;
+class UserEventTabBarView extends StatelessWidget {
+  final List<UserInfo> events;
 
-  const EventTabBarView({super.key, required this.events});
+  const UserEventTabBarView({super.key, required this.events});
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -16,7 +16,7 @@ class EventTabBarView extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
         var event = events[index];
-        return EventCard(event: event);
+        return UserEventCard(event: event);
       },
     );
   }
