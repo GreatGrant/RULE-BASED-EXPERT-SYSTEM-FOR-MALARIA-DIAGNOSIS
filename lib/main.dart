@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/attendant_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/services/auth_service.dart';
@@ -73,7 +74,7 @@ class LoginSignUpScreenState extends State<LoginSignUpScreen>
                 final userDoc = snapshot.data;
                 final user = userDoc;
                 if(user?['role'] == 'admin') {
-                  return const AdminScreen(title: 'Admin Panel',);
+                  return const AdminDashboard();
                 } else {
                   return const AttendantScreen(title: 'Attendants',);
                 }

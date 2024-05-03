@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rbes_for_malaria_diagnosis/services/firebase_auth_methods.dart';
 import 'package:rbes_for_malaria_diagnosis/util/show_snackbar.dart';
 
 class AuthService {
