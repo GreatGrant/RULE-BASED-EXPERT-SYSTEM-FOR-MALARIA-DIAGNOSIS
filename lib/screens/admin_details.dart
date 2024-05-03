@@ -115,10 +115,10 @@ class _EventDetailState extends State<EventDetail>
               child: TabBarView(
                 controller: _controller,
                 physics: const ScrollPhysics(),
-                children: [
+                children: const [
                   EventDetailTab(),
-                  const GuestListTab(),
-                  const CommentsTab(),
+                  GuestListTab(),
+                  CommentsTab(),
                 ],
               ),
             )

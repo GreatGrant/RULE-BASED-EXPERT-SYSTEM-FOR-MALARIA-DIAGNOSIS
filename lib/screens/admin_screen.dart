@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rbes_for_malaria_diagnosis/services/auth_service.dart';
 import '../services/firebase_auth_methods.dart';
+import '../services/user_helper.dart';
 
 class AdminScreen extends StatefulWidget {
   final String title;

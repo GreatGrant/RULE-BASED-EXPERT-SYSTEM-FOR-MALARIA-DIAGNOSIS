@@ -7,6 +7,7 @@ import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/attendant_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/services/auth_service.dart';
+import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
 import 'firebase_options.dart';
 import 'navigation/go_router.dart';
 import 'services/firebase_auth_methods.dart';

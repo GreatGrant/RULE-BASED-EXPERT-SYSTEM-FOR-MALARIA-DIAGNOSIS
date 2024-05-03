@@ -2,22 +2,49 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../util/show_snackbar.dart';
+
 class UserHelper {
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  static Future<void> saveStaff({
+    required String name,
+    required String email,
+    required String password,
+    required BuildContext context
+  }) async {
+    try {
+      // Create user with email and password
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-  static Future<void> saveStaff(String name, String email) async {
-    // Create data object for staff
-    Map<String, dynamic> staffData = {
-      "name": name,
-      "email": email,
-      "role": "staff",
-    };
+      // Get user ID
+      String? userId = userCredential.user?.uid;
 
-    // Save staff data to Firestore
-    await _db.collection("staff").add(staffData);
+      // Create data object for staff
+      Map<String, dynamic> staffData = {
+        "name": name,
+        "email": email,
+        "role": "staff",
+      };
+
+      // Save staff data to Firestore
+      await _db.collection("staff").doc(userId).set(staffData);
+    } on FirebaseAuthException catch (e) {
+      if (kDebugMode) {
+        print("Error saving staff: $e");
+      }
+      if(!context.mounted) return;
+      showSnackBar(context, e.message!);
+    }
   }
 
   static saveUser(User user) async {
