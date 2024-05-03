@@ -69,7 +69,8 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: const TextStyle(color: Colors.white),),
+        backgroundColor: Colors.blueGrey[900],
       ),
       backgroundColor: Colors.blueGrey[100],
       body: Padding(
