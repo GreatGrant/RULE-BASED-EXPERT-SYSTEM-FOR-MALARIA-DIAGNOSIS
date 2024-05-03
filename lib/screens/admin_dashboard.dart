@@ -13,10 +13,19 @@ class AdminDashboard extends StatefulWidget {
 class _AdminDashboardState extends State<AdminDashboard>
     with SingleTickerProviderStateMixin {
   TabController? _controller;
+  String _selectedTab = 'staff'; // Default selected tab
   @override
   void initState() {
     super.initState();
     _controller = TabController(length: 2, vsync: this);
+    _controller!.addListener(() {
+      if (_controller!.indexIsChanging) {
+        setState(() {
+          // Update the selected tab
+          _selectedTab = _controller!.index == 0 ? 'staff' : 'patients';
+        });
+      }
+    });
   }
 
   @override
@@ -51,7 +60,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: Row(
                       children: [
-                        Text("Registered Staff",
+                        Text(_selectedTab == 'staff' ? "Registered Staff" : "Registered Patients",
                             style: theme.textTheme.titleMedium),
                         const Spacer(),
                         Text(
@@ -63,7 +72,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                   ),
                   const SizedBox(height: 12),
                   StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection("users").where('role', isEqualTo: 'user').snapshots(),
+                    stream: FirebaseFirestore.instance.collection("users").where('role', isEqualTo: _selectedTab == 'staff' ? 'user' : 'patient').snapshots(),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData && snapshot.data != null) {
                         final List<DocumentSnapshot> users = snapshot.data!.docs;

@@ -7,6 +7,19 @@ import 'package:package_info_plus/package_info_plus.dart';
 class UserHelper {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+
+  static Future<void> saveStaff(String name, String email) async {
+    // Create data object for staff
+    Map<String, dynamic> staffData = {
+      "name": name,
+      "email": email,
+      "role": "staff",
+    };
+
+    // Save staff data to Firestore
+    await _db.collection("staff").add(staffData);
+  }
+
   static saveUser(User user) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     int buildNumber = int.parse(packageInfo.buildNumber);
