@@ -3,15 +3,15 @@ library;
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class DiagnosisScreen extends StatefulWidget {
+class DiagnosisScreens extends StatefulWidget {
   final String title;
-  const DiagnosisScreen({super.key, required this.title});
+  const DiagnosisScreens({super.key, required this.title});
 
   @override
-  State<DiagnosisScreen> createState() => _DiagnosisScreenState();
+  State<DiagnosisScreens> createState() => _DiagnosisScreensState();
 }
 
-class _DiagnosisScreenState extends State<DiagnosisScreen> {
+class _DiagnosisScreensState extends State<DiagnosisScreens> {
   List<String> selectedSymptoms = [];
   String diagnosisResult = '';
   double diagnosisProbability = 0.0;

@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard.dart';
 import '../screens/diagnosis_screen.dart';
 import '../main.dart';
+import '../screens/fake_diagn.dart';
 
 final router = GoRouter(
     routes: [
@@ -17,7 +18,7 @@ final router = GoRouter(
       GoRoute(
           path: '/attendant',
           name: 'attendant',
-          builder: (context, state) => const DiagnosisScreen(title: "Attendant")
+          builder: (context, state) => const DiagnosisScreen()
       )
     ]
 );
