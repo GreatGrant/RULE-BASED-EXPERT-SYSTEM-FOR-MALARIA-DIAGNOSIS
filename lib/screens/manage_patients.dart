@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
@@ -24,6 +26,7 @@ class _ManagePatientsState extends State<ManagePatients> {
     final theme = Theme.of(context);
     final currentTime = DateTime.now();
     String greeting = _getGreeting(currentTime.hour);
+    final FirebaseAuth auth = FirebaseAuth.instance;
 
     return Scaffold(
       backgroundColor: Colors.blueGrey[100],
@@ -37,8 +40,8 @@ class _ManagePatientsState extends State<ManagePatients> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '$greeting!',
-              style: theme.textTheme.headline6,
+              '$greeting, ${auth.currentUser?.displayName ?? ''}!',
+              style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 16.0),
             _buildSearchBox(),
@@ -126,6 +129,23 @@ class _ManagePatientsState extends State<ManagePatients> {
                     ),
                     ListTile(
                       title: Text('Date: $date', style: const TextStyle(color: Colors.white),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: TextButton(
+                        onPressed: () {
+                          // Navigate to DiagnosisScreen with patient ID
+                          context.go('/diagnosis/$patientId');
+                        },
+                        child: const Text(
+                          'Diagonise',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
