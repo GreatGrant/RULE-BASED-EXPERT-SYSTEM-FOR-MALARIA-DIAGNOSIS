@@ -100,8 +100,4 @@ List<UserInfo> patientManagementList = [
     title: "Manage Patients",
     image: "assets/6.jpg",
   ),
-  const UserInfo(
-    title: "Diagnose Patients",
-    image: "assets/6.jpg",
-  ),
 ];

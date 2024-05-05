@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/models/user_info.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_details.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +13,7 @@ class UserEventCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const ManagePatients(),
-        ),
-      ),
+      onTap: () => context.go('/manage_patients'),
       child: Container(
         width: 180.0,
         padding: const EdgeInsets.fromLTRB(15.0, 20, 15, 12),
