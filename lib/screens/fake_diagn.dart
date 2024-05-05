@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DiagnosisScreen extends StatefulWidget {
-  const DiagnosisScreen({Key? key}) : super(key: key);
+  const DiagnosisScreen({super.key});
 
   @override
-  _DiagnosisScreenState createState() => _DiagnosisScreenState();
+  DiagnosisScreenState createState() => DiagnosisScreenState();
 }
 
-class _DiagnosisScreenState extends State<DiagnosisScreen> {
+class DiagnosisScreenState extends State<DiagnosisScreen> {
   String diagnosisResult = 'Unknown'; // Initialize diagnosis result
   double diagnosisProbability = 0.0;
   List<String> selectedSymptoms = [];
@@ -49,8 +50,18 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     diagnosisResult = result.diagnosis;
     diagnosisProbability = result.probability;
 
-    // Show diagnosis result after diagnosis
-    showDialog(
+    // Define recommendations based on diagnosis
+    String recommendation = '';
+    if (diagnosisResult == 'Malaria') {
+      recommendation = 'Please consult a doctor immediately for further evaluation and treatment.';
+    } else if (diagnosisResult == 'Possible Malaria') {
+      recommendation = 'Consider visiting a healthcare professional for assessment.';
+    } else {
+      recommendation = "It's advisable to monitor your symptoms and seek medical advice if they persist or worsen.";
+      }
+
+      // Show diagnosis result after diagnosis
+      showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -61,6 +72,7 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
               children: [
                 Text('Diagnosis: $diagnosisResult'),
                 Text('Probability: ${(diagnosisProbability * 100).toStringAsFixed(2)}%'),
+                Text('Recommendation: $recommendation'), // Add recommendation here
                 SizedBox(
                   height: 250,
                   child: MalariaDiagnosisChart(probability: diagnosisProbability),
@@ -90,7 +102,16 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     return Scaffold(
       backgroundColor: Colors.blueGrey[100],
       appBar: AppBar(
-        title: const Text('Malaria Diagnosis'),
+        title: const Text('Malaria Diagnosis', style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.blueGrey[900],
+        actions: [
+          IconButton(
+            onPressed: () {
+              UserHelper.logOut();
+            },
+            icon: const Icon(Icons.logout, color: Colors.white,),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -197,6 +218,8 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
             ),
           ),
           ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.blueGrey[900])),
             onPressed: () {
               if(selectedSymptoms.isEmpty) {
                 // Show error message if no symptoms are selected
@@ -209,8 +232,9 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
                 _startDiagnosis();
               }
             },
-            child: const Text('Diagnose'),
+            child: const Text('Diagnose', style: TextStyle(color: Colors.white),),
           ),
+
         ],
       ),
     );
