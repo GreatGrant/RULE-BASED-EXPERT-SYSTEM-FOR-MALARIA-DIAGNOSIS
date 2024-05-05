@@ -38,7 +38,7 @@ class _ManagePatientsState extends State<ManagePatients> {
           children: [
             Text(
               '$greeting!',
-              style: theme.textTheme.titleLarge,
+              style: theme.textTheme.headline6,
             ),
             const SizedBox(height: 16.0),
             _buildSearchBox(),
@@ -53,6 +53,9 @@ class _ManagePatientsState extends State<ManagePatients> {
   Widget _buildSearchBox() {
     return TextField(
       controller: _searchController,
+      onChanged: (value) {
+        setState(() {}); // Trigger rebuild when search text changes
+      },
       decoration: const InputDecoration(
         prefixIcon: Icon(Icons.search),
         hintText: 'Search patients...',
@@ -67,11 +70,24 @@ class _ManagePatientsState extends State<ManagePatients> {
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
           final List<DocumentSnapshot> patients = snapshot.data!.docs;
+          final searchQuery = _searchController.text.toLowerCase();
+          final filteredPatients = patients.where((patient) {
+            final patientData = patient.data() as Map<String, dynamic>;
+            final patientName = patientData['name'] ?? '';
+            return patientName.toLowerCase().contains(searchQuery);
+          }).toList();
+
+          if (filteredPatients.isEmpty) {
+            return Center(
+              child: Text('No user found.'),
+            );
+          }
+
           return ListView.builder(
             shrinkWrap: true,
-            itemCount: patients.length,
+            itemCount: filteredPatients.length,
             itemBuilder: (context, index) {
-              final patient = patients[index];
+              final patient = filteredPatients[index];
               final patientId = patient.id;
               final patientData = patient.data() as Map<String, dynamic>;
               final patientName = patientData['name'] ?? '';
