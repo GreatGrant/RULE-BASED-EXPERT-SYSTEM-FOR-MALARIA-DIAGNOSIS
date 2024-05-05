@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
 
 class ManagePatients extends StatefulWidget {
-  const ManagePatients({Key? key}) : super(key: key);
+  const ManagePatients({super.key});
 
   @override
   State<ManagePatients> createState() => _ManagePatientsState();
@@ -26,8 +26,10 @@ class _ManagePatientsState extends State<ManagePatients> {
     String greeting = _getGreeting(currentTime.hour);
 
     return Scaffold(
+      backgroundColor: Colors.blueGrey[100],
       appBar: AppBar(
-        title: Text('Manage Patients'),
+        title: const Text('Manage Patients'),
+        backgroundColor: Colors.blueGrey[100],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -36,7 +38,7 @@ class _ManagePatientsState extends State<ManagePatients> {
           children: [
             Text(
               '$greeting!',
-              style: theme.textTheme.headline6,
+              style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 16.0),
             _buildSearchBox(),
@@ -51,7 +53,7 @@ class _ManagePatientsState extends State<ManagePatients> {
   Widget _buildSearchBox() {
     return TextField(
       controller: _searchController,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         prefixIcon: Icon(Icons.search),
         hintText: 'Search patients...',
         border: OutlineInputBorder(),
@@ -79,6 +81,7 @@ class _ManagePatientsState extends State<ManagePatients> {
               final date = DateFormat.yMMMd().format(DateTime.fromMicrosecondsSinceEpoch(patientData['date']));
 
               return Card(
+                color: Colors.blueGrey[700],
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16.0),
@@ -88,22 +91,25 @@ class _ManagePatientsState extends State<ManagePatients> {
                   ),
                 ),
                 child: ExpansionTile(
-                  title: Text(patientName),
+                  iconColor: Colors.white,
+                  collapsedIconColor: Colors.white,
+                  // trailing: const Icon(Icons.arrow_drop_down, color: Colors.white),
+                  title: Text(patientName, style: const TextStyle(color: Colors.white),),
                   children: [
                     ListTile(
-                      title: Text('Name: $patientName'),
+                      title: Text('Name: $patientName', style: const TextStyle(color: Colors.white),),
                     ),
                     ListTile(
-                      title: Text('Role: $role'),
+                      title: Text('Role: $role', style: const TextStyle(color: Colors.white),),
                     ),
                     ListTile(
-                      title: Text('Result: $result'),
+                      title: Text('Result: $result', style: const TextStyle(color: Colors.white),),
                     ),
                     ListTile(
-                      title: Text('Registration Number: $registrationNumber'),
+                      title: Text('Registration Number: $registrationNumber', style: const TextStyle(color: Colors.white),),
                     ),
                     ListTile(
-                      title: Text('Date: $date'),
+                      title: Text('Date: $date', style: const TextStyle(color: Colors.white),),
                     ),
                   ],
                 ),
