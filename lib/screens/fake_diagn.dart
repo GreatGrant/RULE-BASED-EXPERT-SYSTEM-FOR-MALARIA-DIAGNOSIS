@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:rbes_for_malaria_diagnosis/services/patient_helper.dart';
 import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DiagnosisScreen extends StatefulWidget {
-  const DiagnosisScreen({super.key});
+  final String patientId;
+  const DiagnosisScreen({super.key, required this.patientId});
 
   @override
   DiagnosisScreenState createState() => DiagnosisScreenState();
@@ -91,10 +93,25 @@ class DiagnosisScreenState extends State<DiagnosisScreen> {
               },
               child: const Text('Close'),
             ),
+            TextButton(
+              onPressed: () {
+                _saveDiagnosisResult(diagnosisProbability);
+              },
+              child: const Text('Save'),
+            ),
           ],
         );
       },
     );
+  }
+
+  void _saveDiagnosisResult(double diagnosisProbability){
+  PatientHelper.saveDiagnosis(
+      diagnosisResult: diagnosisResult,
+      diagnosisProbability: diagnosisProbability,
+      patientId: widget.patientId,
+      context: context
+  );
   }
 
   @override

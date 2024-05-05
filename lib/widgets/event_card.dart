@@ -1,6 +1,7 @@
 import 'package:rbes_for_malaria_diagnosis/models/user_info.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_details.dart';
 import 'package:flutter/material.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/manage_patients.dart';
 
 class UserEventCard extends StatelessWidget {
   final UserInfo event;
@@ -14,7 +15,7 @@ class UserEventCard extends StatelessWidget {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => EventDetail(event: event),
+          builder: (context) => const ManagePatients(),
         ),
       ),
       child: Container(

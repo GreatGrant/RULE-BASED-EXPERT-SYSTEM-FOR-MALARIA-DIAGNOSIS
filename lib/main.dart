@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/fake_diagn.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/manage_patients.dart';
 import 'package:rbes_for_malaria_diagnosis/services/auth_service.dart';
 import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
 import 'firebase_options.dart';
@@ -76,7 +77,8 @@ class LoginSignUpScreenState extends State<LoginSignUpScreen>
                   if(user?['role'] == 'admin') {
                     return const AdminDashboard();
                   } else {
-                    return const DiagnosisScreen();
+                    // Todo()
+                    return const ManagePatients();
                   }
                 } else {
                   return const Material(
