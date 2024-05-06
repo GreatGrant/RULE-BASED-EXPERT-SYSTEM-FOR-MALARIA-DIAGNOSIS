@@ -105,7 +105,7 @@ class _ManageStaffState extends State<ManageStaff> {
                     icon: const Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
                       // Navigate to DiagnosisScreen with staff ID
-                      context.go('/diagnosis/${staff.id}');
+                      context.push('/diagnosis/${staff.id}');
                     },
                   ),
                 ),

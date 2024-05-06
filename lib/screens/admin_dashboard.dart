@@ -305,59 +305,6 @@ class _AdminDashboardState extends State<AdminDashboard>
     ];
   }
 
-  List<Widget> _buildPatientsFormFields(
-      BuildContext context,
-      TextEditingController firstNameController,
-      TextEditingController lastNameController,
-      TextEditingController registrationNoController,
-      DateTime selectedDate,
-      TextEditingController resultController) {
-    return [
-      TextField(
-        controller: firstNameController,
-        decoration: const InputDecoration(labelText: 'First Name'),
-      ),
-      TextField(
-        controller: lastNameController,
-        decoration: const InputDecoration(labelText: 'Last Name'),
-      ),
-      TextField(
-        readOnly: true,
-        controller: TextEditingController(text: selectedDate.toString()),
-        decoration: const InputDecoration(labelText: 'Date'),
-        onTap: () async {
-          final DateTime? pickedDate = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(1900),
-            lastDate: DateTime.now(),
-          );
-          if (pickedDate != null && pickedDate != selectedDate) {
-            setState(() {
-              selectedDate = pickedDate;
-            });
-          }
-        },
-      ),
-      TextField(
-        controller: resultController,
-        decoration: const InputDecoration(labelText: 'Result'),
-      ),
-      ElevatedButton(
-        onPressed: () {
-          _savePatientData(
-              firstNameController.text.trim(),
-              lastNameController.text.trim(),
-              selectedDate,
-              resultController.text.trim()
-          );
-          Navigator.pop(context);
-        },
-        child: const Text('Save'),
-      ),
-    ];
-  }
-
   void _saveStaffData(String firstName, String lastName, String email) async {
     if (firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty) {
       await UserHelper.saveStaff(
