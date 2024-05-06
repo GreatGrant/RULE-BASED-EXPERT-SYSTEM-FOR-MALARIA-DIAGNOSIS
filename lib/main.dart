@@ -90,43 +90,47 @@ class LoginSignUpScreenState extends State<LoginSignUpScreen>
             );
           }
           // User is not authenticated, show the login/signup UI
-          return Scaffold(
-            backgroundColor: Colors.blueGrey[100],
-            appBar: AppBar(
-              title: Text(widget.title, style: const TextStyle(color: Colors.white)),
-              backgroundColor: Colors.blueGrey[900],
-            ),
-            body: Card(
-              margin: const EdgeInsets.all(30),
-              child: SingleChildScrollView( // Wrap the Column with SingleChildScrollView
-                child: Column(
-                  children: [
-                    TabBar(
-                      controller: _tabController,
-                      tabs: const [
-                        Tab(text: 'Login'),
-                        Tab(text: 'Sign Up'),
-                      ],
-                      labelColor: Colors.blueGrey[900],
-                      indicatorColor: Colors.blueGrey[900],
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: const [
-                          LoginForm(),
-                          SignupForm(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
+          return showLoginSignupUi();
         }
     );
+  }
+
+  Widget showLoginSignupUi() {
+      return Scaffold(
+        backgroundColor: Colors.blueGrey[100],
+        appBar: AppBar(
+          title: Text(widget.title, style: const TextStyle(color: Colors.white)),
+          backgroundColor: Colors.blueGrey[900],
+        ),
+        body: Card(
+          margin: const EdgeInsets.all(30),
+          child: SingleChildScrollView( // Wrap the Column with SingleChildScrollView
+            child: Column(
+              children: [
+                TabBar(
+                  controller: _tabController,
+                  tabs: const [
+                    Tab(text: 'Login'),
+                    Tab(text: 'Sign Up'),
+                  ],
+                  labelColor: Colors.blueGrey[900],
+                  indicatorColor: Colors.blueGrey[900],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: const [
+                      LoginForm(),
+                      SignupForm(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
   }
 }
 
