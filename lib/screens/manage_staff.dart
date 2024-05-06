@@ -91,6 +91,7 @@ class _ManageStaffState extends State<ManageStaff> {
               final staff = filteredStaff[index];
               final staffData = staff.data() as Map<String, dynamic>;
               final staffName = staffData['name'] ?? '';
+              final email = staffData['email'] ?? '';
               final role = staffData['role'] ?? '';
 
               return Card(
@@ -100,13 +101,14 @@ class _ManageStaffState extends State<ManageStaff> {
                 ),
                 child: ListTile(
                   title: Text(staffName, style: const TextStyle(color: Colors.white)),
-                  subtitle: Text(role, style: const TextStyle(color: Colors.white)),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.arrow_forward, color: Colors.white),
-                    onPressed: () {
-                      // Navigate to DiagnosisScreen with staff ID
-                      context.push('/diagnosis/${staff.id}');
-                    },
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10,),
+                      Text('Email: $email', style: const TextStyle(color: Colors.white)),
+                      const SizedBox(height: 10,),
+                      Text('Role: $role', style: const TextStyle(color: Colors.white)),
+                    ],
                   ),
                 ),
               );
