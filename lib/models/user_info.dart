@@ -3,16 +3,13 @@ import 'package:equatable/equatable.dart';
 
 class UserInfo extends Equatable {
   final String title;
-  final String image;
   const UserInfo({
     required this.title,
-    required this.image,
   });
 
   @override
   List<Object> get props => [
     title,
-    image,
   ];
 }
 
@@ -84,20 +81,16 @@ List<Friend> friendList = [
 List<UserInfo> staffManagementList = [
   const UserInfo(
     title: "Register Staff",
-    image: "assets/6.jpg",
   ),
   const UserInfo(
     title: "Manage Staff",
-    image: "assets/6.jpg",
   ),
 ];
 List<UserInfo> patientManagementList = [
   const UserInfo(
     title: "Register Patients",
-    image: "assets/6.jpg",
   ),
   const UserInfo(
     title: "Manage Patients",
-    image: "assets/6.jpg",
   ),
 ];

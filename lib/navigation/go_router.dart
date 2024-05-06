@@ -3,6 +3,7 @@ import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/fake_diagn.dart';
 import '../main.dart';
 import '../screens/manage_patients.dart';
+import '../screens/manage_staff.dart';
 
 final router = GoRouter(
   routes: [
@@ -26,6 +27,11 @@ final router = GoRouter(
         final patientId = state.pathParameters['patientId'] ?? '';
         return DiagnosisScreen(patientId: patientId);
       },
+    ),
+    GoRoute(
+      path: '/manage_staff',
+      name: 'manage_staff',
+      builder: (context, state) => const ManageStaff(),
     ),
   ],
 );
