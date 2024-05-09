@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard.dart';
-import 'package:rbes_for_malaria_diagnosis/screens/fake_diagn.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
 import '../main.dart';
 import '../screens/edit_staff_details.dart';
 import '../screens/manage_patients.dart';
