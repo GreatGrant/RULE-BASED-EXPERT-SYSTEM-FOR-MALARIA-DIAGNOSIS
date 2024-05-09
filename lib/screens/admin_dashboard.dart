@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore package
@@ -11,13 +12,14 @@ class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
 
   @override
-  _AdminDashboardState createState() => _AdminDashboardState();
+  AdminDashboardState createState() => AdminDashboardState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard>
+class AdminDashboardState extends State<AdminDashboard>
     with SingleTickerProviderStateMixin {
   TabController? _controller;
   String _selectedTab = 'staff'; // Default selected tab
+
   @override
   void initState() {
     super.initState();
@@ -83,12 +85,22 @@ class _AdminDashboardState extends State<AdminDashboard>
                   ),
                   const SizedBox(height: 12),
                   StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection(_selectedTab == 'staff' ? "users" : "patients")
-                        .where('role', isEqualTo: _selectedTab == 'staff' ? 'user' : 'patient')
+                    stream: FirebaseFirestore.instance.collection(_selectedTab == 'staff' ? "staff" : "patients")
+                        .where('role', isEqualTo: _selectedTab == 'staff' ? 'staff' : 'patient')
                         .snapshots(),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData && snapshot.data != null) {
                         final List<DocumentSnapshot> users = snapshot.data!.docs;
+                        if (users.isEmpty) {
+                          return Center(
+                            child: Text(
+                              _selectedTab == 'staff'
+                                  ? 'No registered staff'
+                                  : 'No registered patients',
+                              style: theme.textTheme.titleMedium,
+                            ),
+                          );
+                        }
                         return ListView.builder(
                           itemCount: users.length,
                           scrollDirection: Axis.vertical,
@@ -101,9 +113,9 @@ class _AdminDashboardState extends State<AdminDashboard>
                                 backgroundColor: Colors.blueGrey[100],
                                 radius: 27.0,
                                 // Set the user's image here
-                                child:
-                                _selectedTab == 'patients' ? Icon(Icons.local_hospital, color: Colors.blueGrey[900]) // Icon for patients
-                                    : Icon(Icons.work, color: Colors.blueGrey[900]), // Icon for staff
+                                child: _selectedTab == 'patients'
+                                    ? Icon(Icons.local_hospital, color: Colors.blueGrey[900])
+                                    : Icon(Icons.work, color: Colors.blueGrey[900]),
                               ),
                               title: Text(
                                 user['name'] ?? '',
@@ -123,7 +135,6 @@ class _AdminDashboardState extends State<AdminDashboard>
                                 }(),
                                 style: theme.textTheme.titleMedium,
                               ),
-
                             );
                           },
                         );
@@ -133,6 +144,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                         );
                       }
                     },
+
                   ),
                 ],
               ),
@@ -216,7 +228,7 @@ class _AdminDashboardState extends State<AdminDashboard>
               lastNameController.text.trim(),
               emailController.text.trim(),
             );
-            Navigator.pop(context);
+            context.pop();
           },
           child: const Text('Save'),
         ),
@@ -281,37 +293,13 @@ class _AdminDashboardState extends State<AdminDashboard>
   }
 
 
-  List<Widget> _buildStaffFormFields(BuildContext context, TextEditingController firstNameController, TextEditingController lastNameController, TextEditingController emailController) {
-    return [
-      TextField(
-        controller: firstNameController,
-        decoration: const InputDecoration(labelText: 'First Name'),
-      ),
-      TextField(
-        controller: lastNameController,
-        decoration: const InputDecoration(labelText: 'Last Name'),
-      ),
-      TextField(
-        controller: emailController,
-        decoration: const InputDecoration(labelText: 'Email'),
-      ),
-      ElevatedButton(
-        onPressed: () {
-          _saveStaffData(firstNameController.text.trim(), lastNameController.text.trim(), emailController.text.trim());
-          Navigator.pop(context);
-        },
-        child: const Text('Save'),
-      ),
-    ];
-  }
-
   void _saveStaffData(String firstName, String lastName, String email) async {
     if (firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty) {
       await UserHelper.saveStaff(
           name: '$firstName $lastName',
           email: email,
-          password: "000000",
-          context: context);
+          context: context
+      );
       // Refresh UI or fetch data again to reflect changes
     } else {
       // Show error message

@@ -15,29 +15,20 @@ class UserHelper {
   static Future<void> saveStaff({
     required String name,
     required String email,
-    required String password,
     required BuildContext context
   }) async {
     try {
-      // Create user with email and password
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      // Get user ID
-      String? userId = userCredential.user?.uid;
 
       // Create data object for staff
       Map<String, dynamic> staffData = {
-        "name": name,
         "email": email,
+        "name": name,
         "role": "staff",
       };
 
-      // Save staff data to Firestore
-      await _db.collection("staff").doc(userId).set(staffData);
+      // Save patient data to Firestore
+      await _db.collection("staff").add(staffData);
+
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) {
         print("Error saving staff: $e");
