@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
 
+import '../widgets/searchbox.dart';
 import 'edit_staff_details.dart';
 
 class ManageStaff extends StatefulWidget {
@@ -43,8 +44,14 @@ class _ManageStaffState extends State<ManageStaff> {
               style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 16.0),
-            _buildSearchBox(),
-            const SizedBox(height: 16.0),
+            SearchBox(
+              hintText: 'Search staff...',
+              icon: Icons.search,
+              onChanged: (value) {
+                setState(() {});
+              },
+            ),
+            const SizedBox(height: 26.0),
             _buildStaffList(),
           ],
         ),
@@ -52,19 +59,6 @@ class _ManageStaffState extends State<ManageStaff> {
     );
   }
 
-  Widget _buildSearchBox() {
-    return TextField(
-      controller: _searchController,
-      onChanged: (value) {
-        setState(() {}); // Trigger rebuild when search text changes
-      },
-      decoration: const InputDecoration(
-        prefixIcon: Icon(Icons.search),
-        hintText: 'Search staff...',
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
 
   Widget _buildStaffList() {
     return StreamBuilder<QuerySnapshot>(
