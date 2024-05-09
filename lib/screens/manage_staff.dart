@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
+
+import 'edit_staff_details.dart';
 
 class ManageStaff extends StatefulWidget {
   const ManageStaff({super.key});
@@ -39,7 +40,7 @@ class _ManageStaffState extends State<ManageStaff> {
           children: [
             Text(
               '$greeting!',
-              style: theme.textTheme.headline5,
+              style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 16.0),
             _buildSearchBox(),
@@ -57,8 +58,8 @@ class _ManageStaffState extends State<ManageStaff> {
       onChanged: (value) {
         setState(() {}); // Trigger rebuild when search text changes
       },
-      decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.search),
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Icons.search),
         hintText: 'Search staff...',
         border: OutlineInputBorder(),
       ),
@@ -92,7 +93,6 @@ class _ManageStaffState extends State<ManageStaff> {
               final staffData = staff.data() as Map<String, dynamic>;
               final staffName = staffData['name'] ?? '';
               final email = staffData['email'] ?? '';
-              final role = staffData['role'] ?? '';
 
               return Card(
                 color: Colors.blueGrey[700],
@@ -106,8 +106,23 @@ class _ManageStaffState extends State<ManageStaff> {
                     children: [
                       const SizedBox(height: 10,),
                       Text('Email: $email', style: const TextStyle(color: Colors.white)),
-                      const SizedBox(height: 10,),
-                      Text('Role: $role', style: const TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.white),
+                        onPressed: () {
+                          _editStaff(staff);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.white),
+                        onPressed: () {
+                          _deleteStaff(staff);
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -117,6 +132,46 @@ class _ManageStaffState extends State<ManageStaff> {
         } else {
           return const Center(child: CircularProgressIndicator());
         }
+      },
+    );
+  }
+
+  void _editStaff(DocumentSnapshot staff) {
+    final staffId = staff.id;
+    final name = staff['name'];
+    final email = staff['email'];
+
+    // Construct the route path with the staffId as a parameter
+    final routePath = '/edit_staff/$staffId';
+
+    context.push(Uri(path: routePath, queryParameters: {'name': name, 'email': email}).toString());
+  }
+
+
+
+  void _deleteStaff(DocumentSnapshot staff) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this staff member?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                UserHelper.deleteStaff(context, staff.id); // Call the delete method
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
       },
     );
   }

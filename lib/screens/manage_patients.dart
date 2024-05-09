@@ -81,7 +81,7 @@ class _ManagePatientsState extends State<ManagePatients> {
           }).toList();
 
           if (filteredPatients.isEmpty) {
-            return Center(
+            return const Center(
               child: Text('No user found.'),
             );
           }

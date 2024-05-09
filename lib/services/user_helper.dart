@@ -120,4 +120,37 @@ class UserHelper {
   static logOut() async {
     return _auth.signOut();
   }
+
+  static Future<void> deleteStaff(BuildContext context, String staffId) async {
+    try {
+      // Delete staff document from Firestore
+      await _db.collection("staff").doc(staffId).delete();
+    } on FirebaseException catch (e) {
+      if (kDebugMode) {
+        print("Error deleting user: $e");
+      }
+      if(!context.mounted) return;
+      showSnackBar(context, e.message!);
+    }
+  }
+
+  static Future<void> updateStaff({
+    required BuildContext context,
+    required String name,
+    required String email,
+    required String staffId
+  }) async {
+    try{
+      await FirebaseFirestore.instance.collection('staff').doc(staffId).update({
+        'name': name,
+        'email': email,
+        'role': 'staff'
+      });
+    }on FirebaseException catch (e){
+      if(!context.mounted) return;
+      showSnackBar(context, e.message!);
+    }
+
+  }
+
 }
