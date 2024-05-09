@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
+import 'package:rbes_for_malaria_diagnosis/services/patient_helper.dart';
 
 import '../widgets/searchbox.dart';
 
@@ -128,19 +129,37 @@ class _ManagePatientsState extends State<ManagePatients> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: TextButton(
-                        onPressed: () {
-                          // Navigate to DiagnosisScreen with patient ID
-                          context.go('/diagnosis/$patientId');
-                        },
-                        child: const Text(
-                          'Diagonise',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20
+                      child: Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              // Navigate to DiagnosisScreen with patient ID
+                              context.push('/diagnosis/$patientId');
+                            },
+                            child: const Text(
+                              'Diagnose',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 16.0),
+                          TextButton(
+                            onPressed: () {
+                              _deletePatient(patientId);
+                            },
+                            child: const Text(
+                              'Delete Patient',
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -155,6 +174,7 @@ class _ManagePatientsState extends State<ManagePatients> {
     );
   }
 
+
   String _getGreeting(int hour) {
     if (hour < 12) {
       return 'Good morning';
@@ -163,6 +183,33 @@ class _ManagePatientsState extends State<ManagePatients> {
     } else {
       return 'Good evening';
     }
+  }
+
+  void _deletePatient(String patientId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this patient?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                context.pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop(); // Close the dialog
+                PatientHelper.deletePatient(patientId: patientId, context: context);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

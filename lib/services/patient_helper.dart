@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rbes_for_malaria_diagnosis/util/show_snackbar.dart';
 
@@ -28,6 +29,16 @@ class PatientHelper {
 
     // Save patient data to Firestore
     await _db.collection("patients").add(patientData);
+  }
+
+  static deletePatient({required String patientId, required BuildContext context}) async{
+    try{
+      FirebaseFirestore.instance.collection('patients').doc(patientId).delete();
+    }on FirebaseException catch(e){
+      if(!context.mounted) return;
+      showSnackBar(context, e.message!);
+    }
+
   }
 
   static saveDiagnosis({
