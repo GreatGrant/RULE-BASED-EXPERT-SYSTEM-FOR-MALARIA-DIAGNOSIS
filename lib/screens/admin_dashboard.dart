@@ -23,11 +23,13 @@ class AdminDashboard extends StatefulWidget {
 class AdminDashboardState extends State<AdminDashboard>
     with SingleTickerProviderStateMixin {
   TabController? _controller;
+  late TextEditingController _searchController;
   String _selectedTab = 'staff'; // Default selected tab
 
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
     _controller = TabController(length: 2, vsync: this);
     _controller!.addListener(() {
       if (_controller!.indexIsChanging) {
@@ -37,6 +39,13 @@ class AdminDashboardState extends State<AdminDashboard>
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -50,8 +59,11 @@ class AdminDashboardState extends State<AdminDashboard>
         child: Column(
           children: [
             const SizedBox(height: 15.0),
-            const SearchBox(
-                hintText: 'Search patient or staff', icon: Icons.search),
+            SearchBox(
+                hintText: 'Search patient or staff',
+              icon: Icons.search,
+              controller: _searchController
+            ),
             const SizedBox(height: 15.0),
             CustomTabBar(
               controller: _controller!,

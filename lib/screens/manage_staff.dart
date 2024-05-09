@@ -49,7 +49,7 @@ class _ManageStaffState extends State<ManageStaff> {
               icon: Icons.search,
               onChanged: (value) {
                 setState(() {});
-              },
+              }, controller: _searchController,
             ),
             const SizedBox(height: 26.0),
             _buildStaffList(),

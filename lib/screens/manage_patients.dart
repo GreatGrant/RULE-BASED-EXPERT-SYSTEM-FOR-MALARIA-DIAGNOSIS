@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
 
+import '../widgets/searchbox.dart';
+
 class ManagePatients extends StatefulWidget {
   const ManagePatients({super.key});
 
@@ -44,8 +46,15 @@ class _ManagePatientsState extends State<ManagePatients> {
               style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 16.0),
-            _buildSearchBox(),
-            const SizedBox(height: 16.0),
+            SearchBox(
+              hintText: 'Search staff...',
+              icon: Icons.search,
+              onChanged: (value) {
+                setState(() {});
+              }, controller: _searchController,
+            ),
+
+            const SizedBox(height: 26.0),
             _buildPatientList(),
           ],
         ),
@@ -53,19 +62,6 @@ class _ManagePatientsState extends State<ManagePatients> {
     );
   }
 
-  Widget _buildSearchBox() {
-    return TextField(
-      controller: _searchController,
-      onChanged: (value) {
-        setState(() {}); // Trigger rebuild when search text changes
-      },
-      decoration: const InputDecoration(
-        prefixIcon: Icon(Icons.search),
-        hintText: 'Search patients...',
-        border: OutlineInputBorder(),
-      ),
-    );
-  }
 
   Widget _buildPatientList() {
     return StreamBuilder<QuerySnapshot>(

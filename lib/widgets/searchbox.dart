@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 import 'package:flutter/material.dart';
 
 class SearchBox extends StatelessWidget {
   final String hintText;
   final IconData icon;
+  final TextEditingController controller;
   final void Function(String)? onChanged;
 
   const SearchBox({
     super.key,
     required this.hintText,
     required this.icon,
+    required this.controller,
     this.onChanged,
   });
 
@@ -37,6 +36,7 @@ class SearchBox extends StatelessWidget {
         ],
       ),
       child: TextField(
+        controller: controller,
         cursorColor: theme.primaryColor,
         onChanged: onChanged,
         decoration: InputDecoration(
