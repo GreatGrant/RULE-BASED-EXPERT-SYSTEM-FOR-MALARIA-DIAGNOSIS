@@ -99,8 +99,8 @@ class LoginSignUpScreenState extends State<LoginSignUpScreen>
       return Scaffold(
         backgroundColor: Colors.blueGrey[100],
         appBar: AppBar(
-          title: Text(widget.title, style: const TextStyle(color: Colors.white)),
-          backgroundColor: Colors.blueGrey[900],
+          title: Text(widget.title),
+          backgroundColor: Colors.blueGrey[100],
         ),
         body: Card(
           margin: const EdgeInsets.all(30),
