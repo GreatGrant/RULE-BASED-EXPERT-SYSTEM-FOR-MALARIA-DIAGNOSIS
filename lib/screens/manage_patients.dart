@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/services/patient_helper.dart';
-
 import '../widgets/searchbox.dart';
 
 class ManagePatients extends StatefulWidget {
@@ -44,17 +42,20 @@ class _ManagePatientsState extends State<ManagePatients> {
           children: [
             Text(
               '$greeting, ${auth.currentUser?.displayName ?? ''}!',
-              style: theme.textTheme.titleLarge,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: Colors.blueGrey[900],
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 16.0),
             SearchBox(
-              hintText: 'Search staff...',
+              hintText: 'Search patients...',
               icon: Icons.search,
               onChanged: (value) {
                 setState(() {});
-              }, controller: _searchController,
+              },
+              controller: _searchController,
             ),
-
             const SizedBox(height: 26.0),
             _buildPatientList(),
           ],
@@ -62,7 +63,6 @@ class _ManagePatientsState extends State<ManagePatients> {
       ),
     );
   }
-
 
   Widget _buildPatientList() {
     return StreamBuilder<QuerySnapshot>(
@@ -79,7 +79,14 @@ class _ManagePatientsState extends State<ManagePatients> {
 
           if (filteredPatients.isEmpty) {
             return const Center(
-              child: Text('No user found.'),
+              child: Text(
+                'All registered patients will appear here.',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
             );
           }
 
@@ -99,33 +106,48 @@ class _ManagePatientsState extends State<ManagePatients> {
               return Card(
                 color: Colors.blueGrey[700],
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16.0),
-                    topRight: Radius.circular(16.0),
-                    bottomLeft: Radius.circular(0),
-                    bottomRight: Radius.circular(0),
-                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
                 ),
                 child: ExpansionTile(
                   iconColor: Colors.white,
                   collapsedIconColor: Colors.white,
-                  // trailing: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                  title: Text(patientName, style: const TextStyle(color: Colors.white),),
+                  title: Text(
+                    patientName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   children: [
                     ListTile(
-                      title: Text('Name: $patientName', style: const TextStyle(color: Colors.white),),
+                      title: Text(
+                        'Name: $patientName',
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                     ListTile(
-                      title: Text('Role: $role', style: const TextStyle(color: Colors.white),),
+                      title: Text(
+                        'Role: $role',
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                     ListTile(
-                      title: Text('Result: $result', style: const TextStyle(color: Colors.white),),
+                      title: Text(
+                        'Result: $result',
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                     ListTile(
-                      title: Text('Registration Number: $registrationNumber', style: const TextStyle(color: Colors.white),),
+                      title: Text(
+                        'Registration Number: $registrationNumber',
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                     ListTile(
-                      title: Text('Date: $date', style: const TextStyle(color: Colors.white),),
+                      title: Text(
+                        'Date: $date',
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -136,12 +158,18 @@ class _ManagePatientsState extends State<ManagePatients> {
                               // Navigate to DiagnosisScreen with patient ID
                               context.push('/diagnosis/$patientId');
                             },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.blueGrey[900],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
                             child: const Text(
                               'Diagnose',
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -150,12 +178,18 @@ class _ManagePatientsState extends State<ManagePatients> {
                             onPressed: () {
                               _deletePatient(patientId);
                             },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.red[700],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
                             child: const Text(
                               'Delete Patient',
                               style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -173,7 +207,6 @@ class _ManagePatientsState extends State<ManagePatients> {
       },
     );
   }
-
 
   String _getGreeting(int hour) {
     if (hour < 12) {

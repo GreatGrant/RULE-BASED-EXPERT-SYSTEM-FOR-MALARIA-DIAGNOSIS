@@ -7,7 +7,6 @@ import 'package:rbes_for_malaria_diagnosis/widgets/custom_tab.dart';
 import '../models/user_info.dart';
 import '../services/patient_helper.dart';
 import '../services/user_helper.dart';
-import '../widgets/build_appbar.dart';
 import '../widgets/build_drawer.dart';
 import '../widgets/searchbox.dart';
 import '../widgets/custom_tabbar_view.dart';
@@ -55,30 +54,30 @@ class AdminDashboardState extends State<AdminDashboard>
       appBar: buildAppBar(context),
       drawer: buildDrawer(context),
       backgroundColor: Colors.blueGrey[100],
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 15.0),
-            SearchBox(
-                hintText: 'Search patient or staff',
-              icon: Icons.search,
-              controller: _searchController
-            ),
-            const SizedBox(height: 15.0),
-            CustomTabBar(
-              controller: _controller!,
-              tabTitles: const ["Staff", "Patients"],
-            ),
-            const SizedBox(height: 15.0),
-            CustomTabBarView(
-              controller: _controller!,
-              children: [
-                UserEventTabBarView(events: staffManagementList),
-                UserEventTabBarView(events: patientManagementList),
-              ],
-            ),
-            const SizedBox(height: 35.0),
-            Container(
+      body: Column(
+        children: [
+          const SizedBox(height: 15.0),
+          SearchBox(
+            hintText: 'Search patient or staff',
+            icon: Icons.search,
+            controller: _searchController,
+          ),
+          const SizedBox(height: 15.0),
+          CustomTabBar(
+            controller: _controller!,
+            tabTitles: const ["Staff", "Patients"],
+          ),
+          const SizedBox(height: 15.0),
+          CustomTabBarView(
+            controller: _controller!,
+            children: [
+              UserEventTabBarView(events: staffManagementList),
+              UserEventTabBarView(events: patientManagementList),
+            ],
+          ),
+          const SizedBox(height: 35.0),
+          Expanded(
+            child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               decoration: BoxDecoration(
@@ -95,10 +94,12 @@ class AdminDashboardState extends State<AdminDashboard>
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: Row(
                       children: [
-                        Text(_selectedTab == 'staff'
-                            ? "Registered Staff"
-                            : "Registered Patients",
-                            style: theme.textTheme.titleMedium),
+                        Text(
+                          _selectedTab == 'staff'
+                              ? "Registered Staff"
+                              : "Registered Patients",
+                          style: theme.textTheme.titleMedium,
+                        ),
                         const Spacer(),
                         GestureDetector(
                           onTap: () {
@@ -106,87 +107,93 @@ class AdminDashboardState extends State<AdminDashboard>
                           },
                           child: Text(
                             "+ Add new",
-                            style: theme.textTheme.titleMedium,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: Colors.blueGrey[900],
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         )
                       ],
                     ),
                   ),
                   const SizedBox(height: 12),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection(
-                        _selectedTab == 'staff' ? "staff" : "patients")
-                        .where('role', isEqualTo: _selectedTab == 'staff'
-                        ? 'staff'
-                        : 'patient')
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData && snapshot.data != null) {
-                        final List<DocumentSnapshot> users = snapshot.data!
-                            .docs;
-                        if (users.isEmpty) {
-                          return Center(
-                            child: Text(
-                              _selectedTab == 'staff'
-                                  ? 'No registered staff'
-                                  : 'No registered patients',
-                              style: theme.textTheme.titleMedium,
-                            ),
-                          );
-                        }
-                        return ListView.builder(
-                          itemCount: users.length,
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: const ScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            var user = users[index];
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.blueGrey[100],
-                                radius: 27.0,
-                                // Set the user's image here
-                                child: _selectedTab == 'patients'
-                                    ? Icon(Icons.local_hospital,
-                                    color: Colors.blueGrey[900])
-                                    : Icon(
-                                    Icons.work, color: Colors.blueGrey[900]),
-                              ),
-                              title: Text(
-                                user['name'] ?? '',
-                                style: theme.textTheme.bodyLarge,
-                              ),
-                              subtitle: Text(
-                                    () {
-                                  try {
-                                    if (_selectedTab == 'patients') {
-                                      return user['registrationNumber'] ?? '';
-                                    } else {
-                                      return user['email'] ?? '';
-                                    }
-                                  } catch (e) {
-                                    return ''; // Return an empty string in case of an error
-                                  }
-                                }(),
-                                style: theme.textTheme.titleMedium,
+                  Expanded(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection(
+                          _selectedTab == 'staff' ? "staff" : "patients")
+                          .where('role',
+                          isEqualTo: _selectedTab == 'staff'
+                              ? 'staff'
+                              : 'patient')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData && snapshot.data != null) {
+                          final List<DocumentSnapshot> users = snapshot.data!.docs;
+                          if (users.isEmpty) {
+                            return Center(
+                              child: Text(
+                                _selectedTab == 'staff'
+                                    ? 'No registered staff'
+                                    : 'No registered patients',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: Colors.black54,
+                                  fontSize: 18,
+                                ),
                               ),
                             );
-                          },
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-
+                          }
+                          return ListView.builder(
+                            itemCount: users.length,
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              var user = users[index];
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.blueGrey[100],
+                                  radius: 27.0,
+                                  child: _selectedTab == 'patients'
+                                      ? Icon(Icons.local_hospital,
+                                      color: Colors.blueGrey[900])
+                                      : Icon(Icons.work,
+                                      color: Colors.blueGrey[900]),
+                                ),
+                                title: Text(
+                                  user['name'] ?? '',
+                                  style: theme.textTheme.bodyLarge,
+                                ),
+                                subtitle: Text(
+                                      () {
+                                    try {
+                                      if (_selectedTab == 'patients') {
+                                        return user['registrationNumber'] ?? '';
+                                      } else {
+                                        return user['email'] ?? '';
+                                      }
+                                    } catch (e) {
+                                      return ''; // Return an empty string in case of an error
+                                    }
+                                  }(),
+                                  style: theme.textTheme.titleMedium,
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -206,7 +213,8 @@ class AdminDashboardState extends State<AdminDashboard>
     final TextEditingController lastNameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController resultController = TextEditingController();
-    final TextEditingController registrationNoController = TextEditingController();
+    final TextEditingController registrationNoController =
+    TextEditingController();
     late DateTime selectedDate = DateTime.now();
 
     firstNameController.clear();
@@ -221,124 +229,155 @@ class AdminDashboardState extends State<AdminDashboard>
         return SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.only(
-              bottom: MediaQuery
-                  .of(context)
-                  .viewInsets
-                  .bottom,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: _selectedTab == 'staff'
                 ? _buildStaffBottomSheet(
-                context, firstNameController, lastNameController,
-                emailController)
+              context,
+              firstNameController,
+              lastNameController,
+              emailController,
+            )
                 : _buildPatientBottomSheet(
-                context,
-                firstNameController,
-                lastNameController,
-                registrationNoController,
-                selectedDate,
-                resultController),
+              context,
+              firstNameController,
+              lastNameController,
+              registrationNoController,
+              selectedDate,
+              resultController,
+            ),
           ),
         );
       },
     );
   }
 
-  Widget _buildStaffBottomSheet(BuildContext context,
+  Widget _buildStaffBottomSheet(
+      BuildContext context,
       TextEditingController firstNameController,
       TextEditingController lastNameController,
-      TextEditingController emailController) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextField(
-          controller: firstNameController,
-          decoration: const InputDecoration(labelText: 'First Name'),
-        ),
-        TextField(
-          controller: lastNameController,
-          decoration: const InputDecoration(labelText: 'Last Name'),
-        ),
-        TextField(
-          controller: emailController,
-          decoration: const InputDecoration(labelText: 'Email'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            _saveStaffData(
-              firstNameController.text.trim(),
-              lastNameController.text.trim(),
-              emailController.text.trim(),
-            );
-            context.pop();
-          },
-          child: const Text('Save'),
-        ),
-      ],
+      TextEditingController emailController,
+      ) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: firstNameController,
+            decoration: const InputDecoration(labelText: 'First Name'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: lastNameController,
+            decoration: const InputDecoration(labelText: 'Last Name'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: emailController,
+            decoration: const InputDecoration(labelText: 'Email'),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              _saveStaffData(
+                firstNameController.text.trim(),
+                lastNameController.text.trim(),
+                emailController.text.trim(),
+              );
+              context.pop();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blueGrey[900],
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            child: const Text('Save', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildPatientBottomSheet(BuildContext context,
+  Widget _buildPatientBottomSheet(
+      BuildContext context,
       TextEditingController firstNameController,
       TextEditingController lastNameController,
       TextEditingController registrationNoController,
       DateTime selectedDate,
-      TextEditingController resultController) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextField(
-          controller: firstNameController,
-          decoration: const InputDecoration(labelText: 'First Name'),
-        ),
-        TextField(
-          controller: lastNameController,
-          decoration: const InputDecoration(labelText: 'Last Name'),
-        ),
-        TextField(
-          readOnly: true,
-          controller: TextEditingController(text: selectedDate.toString()),
-          decoration: const InputDecoration(labelText: 'Date'),
-          onTap: () async {
-            final DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime.now(),
-            );
-            if (pickedDate != null && pickedDate != selectedDate) {
-              setState(() {
-                selectedDate = pickedDate;
-              });
-            }
-          },
-        ),
-        TextField(
-          controller: resultController,
-          decoration: const InputDecoration(labelText: 'Result'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            _savePatientData(
-              firstNameController.text.trim(),
-              lastNameController.text.trim(),
-              selectedDate,
-              resultController.text.trim(),
-            );
-            Navigator.pop(context);
-          },
-          child: const Text('Save'),
-        ),
-      ],
+      TextEditingController resultController,
+      ) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: firstNameController,
+            decoration: const InputDecoration(labelText: 'First Name'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: lastNameController,
+            decoration: const InputDecoration(labelText: 'Last Name'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            readOnly: true,
+            controller: TextEditingController(text: selectedDate.toString()),
+            decoration: const InputDecoration(labelText: 'Date'),
+            onTap: () async {
+              final DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(1900),
+                lastDate: DateTime.now(),
+              );
+              if (pickedDate != null && pickedDate != selectedDate) {
+                setState(() {
+                  selectedDate = pickedDate;
+                });
+              }
+            },
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: resultController,
+            decoration: const InputDecoration(labelText: 'Result'),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              _savePatientData(
+                firstNameController.text.trim(),
+                lastNameController.text.trim(),
+                selectedDate,
+                resultController.text.trim(),
+              );
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blueGrey[900],
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            child: const Text('Save', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
     );
   }
-
 
   void _saveStaffData(String firstName, String lastName, String email) async {
     if (firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty) {
       await UserHelper.saveStaff(
-          name: '$firstName $lastName',
-          email: email,
-          context: context
+        name: '$firstName $lastName',
+        email: email,
+        context: context,
       );
       // Refresh UI or fetch data again to reflect changes
     } else {
@@ -346,16 +385,16 @@ class AdminDashboardState extends State<AdminDashboard>
     }
   }
 
-  void _savePatientData(String firstName, String lastName,
-      DateTime selectedDate, String result) async {
+  void _savePatientData(String firstName, String lastName, DateTime selectedDate,
+      String result) async {
     if (firstName.isNotEmpty && lastName.isNotEmpty) {
       String registrationNo = await generateRegistrationNumber();
       await PatientHelper.savePatient(
-          firstName: firstName,
-          lastName: lastName,
-          date: selectedDate,
-          registrationNumber: registrationNo,
-          result: result
+        firstName: firstName,
+        lastName: lastName,
+        date: selectedDate,
+        registrationNumber: registrationNo,
+        result: result,
       );
       // Refresh UI or fetch data again to reflect changes
     } else {
@@ -373,8 +412,11 @@ class AdminDashboardState extends State<AdminDashboard>
     String day = DateFormat('dd').format(now);
 
     // Retrieve the last registration number from Firestore
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection(
-        'patients').orderBy('registrationNo', descending: true).limit(1).get();
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('patients')
+        .orderBy('registrationNo', descending: true)
+        .limit(1)
+        .get();
     int lastRegistrationNo = 0;
 
     if (snapshot.docs.isNotEmpty) {
