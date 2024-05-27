@@ -5,6 +5,8 @@ import '../main.dart';
 import '../screens/edit_staff_details.dart';
 import '../screens/manage_patients.dart';
 import '../screens/manage_staff.dart';
+import '../screens/patients_overview_screen.dart';
+import '../screens/staff_overview_screen.dart';
 
 final router = GoRouter(
   routes: [
@@ -42,6 +44,16 @@ final router = GoRouter(
         final email = state.uri.queryParameters['email'] ?? '';
         return EditStaffDetailsPage(staffId: staffId,  name: name, email: email,);
       },
+    ),
+    GoRoute(
+      path: '/staff_overview',
+      name: 'staff_overview',
+      builder: (context, state) => const StaffOverviewScreen(),
+    ),
+    GoRoute(
+      path: '/patients_overview',
+      name: 'patients_overview',
+      builder: (context, state) => const PatientsOverviewScreen(),
     ),
   ],
 );

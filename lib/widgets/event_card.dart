@@ -14,10 +14,14 @@ class UserEventCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         final router = GoRouter.of(context);
-        if (event.title.contains("Staff")) {
+        if (event.title.contains("Manage Staff")) {
           router.push('/manage_staff');
-        } else {
+        } else if (event.title.contains("Manage Patient")) {
           router.push('/manage_patients');
+        }else if (event.title.contains("Staff Overview")) {
+          router.push('/staff_overview');
+        }else if (event.title.contains("Patients Overview")) {
+          router.push('/patients_overview');
         }
       },
       child: Container(
