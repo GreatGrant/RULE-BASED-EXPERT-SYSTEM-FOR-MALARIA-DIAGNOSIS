@@ -216,8 +216,7 @@ class AdminDashboardState extends State<AdminDashboard>
     final TextEditingController lastNameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController resultController = TextEditingController();
-    final TextEditingController registrationNoController =
-    TextEditingController();
+    final TextEditingController registrationNoController = TextEditingController();
     final TextEditingController ageController = TextEditingController();
     final TextEditingController genderController = TextEditingController();
     DateTime selectedDate = DateTime.now();
@@ -244,6 +243,8 @@ class AdminDashboardState extends State<AdminDashboard>
               firstNameController,
               lastNameController,
               emailController,
+              registrationNoController,
+              ageController,
             )
                 : _buildPatientBottomSheet(
               context,
@@ -266,6 +267,8 @@ class AdminDashboardState extends State<AdminDashboard>
       TextEditingController firstNameController,
       TextEditingController lastNameController,
       TextEditingController emailController,
+      TextEditingController departmentController,
+      TextEditingController ageController,
       ) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -286,6 +289,26 @@ class AdminDashboardState extends State<AdminDashboard>
             controller: emailController,
             decoration: const InputDecoration(labelText: 'Email'),
           ),
+          const SizedBox(height: 10),
+          DropdownButtonFormField<String>(
+            value: null,
+            decoration: const InputDecoration(labelText: 'Department'),
+            items: <String>['Pediatrics Department', 'Internal Medicine Department', 'Maternity Department']
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              // Handle department selection
+            },
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: ageController,
+            decoration: const InputDecoration(labelText: 'Age'),
+          ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
@@ -293,8 +316,10 @@ class AdminDashboardState extends State<AdminDashboard>
                 firstNameController.text.trim(),
                 lastNameController.text.trim(),
                 emailController.text.trim(),
+                departmentController.text.trim(),
+                ageController.text.trim(),
               );
-              context.pop();
+              Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blueGrey[900],
@@ -320,12 +345,6 @@ class AdminDashboardState extends State<AdminDashboard>
       TextEditingController ageController,
       TextEditingController genderController,
       ) {
-    // Define list of genders
-    List<String> genders = ['Male', 'Female'];
-
-    // Selected gender state variable
-    String selectedGender = genders[0]; // Default selected gender
-
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -366,23 +385,9 @@ class AdminDashboardState extends State<AdminDashboard>
             decoration: const InputDecoration(labelText: 'Age'),
           ),
           const SizedBox(height: 10),
-          // Gender dropdown button
-          DropdownButtonFormField<String>(
-            value: selectedGender,
-            items: genders.map((gender) {
-              return DropdownMenuItem<String>(
-                value: gender,
-                child: Text(gender),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedGender = value!;
-              });
-            },
-            decoration: const InputDecoration(
-              labelText: 'Gender',
-            ),
+          TextField(
+            controller: genderController,
+            decoration: const InputDecoration(labelText: 'Gender'),
           ),
           const SizedBox(height: 10),
           TextField(
@@ -398,7 +403,7 @@ class AdminDashboardState extends State<AdminDashboard>
                 selectedDate,
                 resultController.text.trim(),
                 ageController.text.trim(),
-                selectedGender, // Pass selected gender to save method
+                genderController.text.trim(),
               );
               Navigator.pop(context);
             },
@@ -416,13 +421,20 @@ class AdminDashboardState extends State<AdminDashboard>
     );
   }
 
-
-  void _saveStaffData(String firstName, String lastName, String email) async {
+  void _saveStaffData(
+      String firstName,
+      String lastName,
+      String email,
+      String department,
+      String age,
+      ) async {
     if (firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty) {
       await UserHelper.saveStaff(
         name: '$firstName $lastName',
         email: email,
         context: context,
+        department: department,
+        age: age,
       );
       // Refresh UI or fetch data again to reflect changes
     } else {

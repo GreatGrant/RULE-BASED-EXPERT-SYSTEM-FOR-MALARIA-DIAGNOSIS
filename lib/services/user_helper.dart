@@ -15,30 +15,32 @@ class UserHelper {
   static Future<void> saveStaff({
     required String name,
     required String email,
-    required BuildContext context
+    required String department,
+    required String age,
+    required BuildContext context,
   }) async {
     try {
-
       // Create data object for staff
       Map<String, dynamic> staffData = {
         "email": email,
         "name": name,
         "role": "staff",
+        "department": department,
+        "age": age,
       };
 
-      // Save patient data to Firestore
+      // Save staff data to Firestore
       await _db.collection("staff").add(staffData);
-
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) {
         print("Error saving staff: $e");
       }
-      if(!context.mounted) return;
+      if (!context.mounted) return;
       showSnackBar(context, e.message!);
     }
   }
 
-  static saveUser(User user) async {
+  static Future<void> saveUser(User user) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     int buildNumber = int.parse(packageInfo.buildNumber);
 
@@ -50,22 +52,26 @@ class UserHelper {
       "role": "user",
       "build_number": buildNumber,
     };
+
     final userRef = _db.collection("users").doc(user.uid);
+
     if ((await userRef.get()).exists) {
       await userRef.update({
         "last_login": user.metadata.lastSignInTime?.millisecondsSinceEpoch,
         "build_number": buildNumber,
       });
     } else {
-      await _db.collection("users").doc(user.uid).set(userData);
+      await userRef.set(userData);
     }
+
     await _saveDevice(user);
   }
 
-  static _saveDevice(User user) async {
+  static Future<void> _saveDevice(User user) async {
     DeviceInfoPlugin devicePlugin = DeviceInfoPlugin();
     String? deviceId;
     Map<String, dynamic> deviceData = {};
+
     if (Platform.isAndroid) {
       final deviceInfo = await devicePlugin.androidInfo;
       deviceId = deviceInfo.id;
@@ -76,6 +82,7 @@ class UserHelper {
         "device": deviceInfo.device,
       };
     }
+
     if (Platform.isIOS) {
       final deviceInfo = await devicePlugin.iosInfo;
       deviceId = deviceInfo.identifierForVendor;
@@ -86,12 +93,14 @@ class UserHelper {
         "platform": 'ios',
       };
     }
+
     final nowMS = DateTime.now().toUtc().millisecondsSinceEpoch;
     final deviceRef = _db
         .collection("users")
         .doc(user.uid)
         .collection("devices")
         .doc(deviceId);
+
     if ((await deviceRef.get()).exists) {
       await deviceRef.update({
         "updated_at": nowMS,
@@ -108,7 +117,7 @@ class UserHelper {
     }
   }
 
-  static logOut() async {
+  static Future<void> logOut() async {
     return _auth.signOut();
   }
 
@@ -120,7 +129,7 @@ class UserHelper {
       if (kDebugMode) {
         print("Error deleting user: $e");
       }
-      if(!context.mounted) return;
+      if (!context.mounted) return;
       showSnackBar(context, e.message!);
     }
   }
@@ -129,19 +138,17 @@ class UserHelper {
     required BuildContext context,
     required String name,
     required String email,
-    required String staffId
+    required String staffId,
   }) async {
-    try{
-      await FirebaseFirestore.instance.collection('staff').doc(staffId).update({
+    try {
+      await _db.collection('staff').doc(staffId).update({
         'name': name,
         'email': email,
-        'role': 'staff'
+        'role': 'staff',
       });
-    }on FirebaseException catch (e){
-      if(!context.mounted) return;
+    } on FirebaseException catch (e) {
+      if (!context.mounted) return;
       showSnackBar(context, e.message!);
     }
-
   }
-
 }
