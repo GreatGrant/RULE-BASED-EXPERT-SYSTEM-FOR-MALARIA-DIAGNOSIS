@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore package
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rbes_for_malaria_diagnosis/util/show_snackbar.dart';
 import 'package:rbes_for_malaria_diagnosis/widgets/custom_tab.dart';
 import '../models/user_info.dart';
@@ -130,7 +130,8 @@ class AdminDashboardState extends State<AdminDashboard>
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasData && snapshot.data != null) {
-                          final List<DocumentSnapshot> users = snapshot.data!.docs;
+                          final List<DocumentSnapshot> users =
+                              snapshot.data!.docs;
                           if (users.isEmpty) {
                             return Center(
                               child: Text(
@@ -148,7 +149,8 @@ class AdminDashboardState extends State<AdminDashboard>
                             itemCount: users.length,
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
+                            itemBuilder:
+                                (BuildContext context, int index) {
                               var user = users[index];
                               return ListTile(
                                 leading: CircleAvatar(
@@ -168,7 +170,8 @@ class AdminDashboardState extends State<AdminDashboard>
                                       () {
                                     try {
                                       if (_selectedTab == 'patients') {
-                                        return user['registrationNumber'] ?? '';
+                                        return user['registrationNumber'] ??
+                                            '';
                                       } else {
                                         return user['email'] ?? '';
                                       }
@@ -215,12 +218,16 @@ class AdminDashboardState extends State<AdminDashboard>
     final TextEditingController resultController = TextEditingController();
     final TextEditingController registrationNoController =
     TextEditingController();
-    late DateTime selectedDate = DateTime.now();
+    final TextEditingController ageController = TextEditingController();
+    final TextEditingController genderController = TextEditingController();
+    DateTime selectedDate = DateTime.now();
 
     firstNameController.clear();
     lastNameController.clear();
     emailController.clear();
     registrationNoController.clear();
+    ageController.clear();
+    genderController.clear();
 
     await showModalBottomSheet(
       context: context,
@@ -245,6 +252,8 @@ class AdminDashboardState extends State<AdminDashboard>
               registrationNoController,
               selectedDate,
               resultController,
+              ageController,
+              genderController,
             ),
           ),
         );
@@ -308,6 +317,8 @@ class AdminDashboardState extends State<AdminDashboard>
       TextEditingController registrationNoController,
       DateTime selectedDate,
       TextEditingController resultController,
+      TextEditingController ageController,
+      TextEditingController genderController,
       ) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -344,6 +355,17 @@ class AdminDashboardState extends State<AdminDashboard>
           ),
           const SizedBox(height: 10),
           TextField(
+            controller: ageController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(labelText: 'Age'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: genderController,
+            decoration: const InputDecoration(labelText: 'Gender'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
             controller: resultController,
             decoration: const InputDecoration(labelText: 'Result'),
           ),
@@ -355,6 +377,8 @@ class AdminDashboardState extends State<AdminDashboard>
                 lastNameController.text.trim(),
                 selectedDate,
                 resultController.text.trim(),
+                ageController.text.trim(),
+                genderController.text.trim(),
               );
               Navigator.pop(context);
             },
@@ -385,8 +409,14 @@ class AdminDashboardState extends State<AdminDashboard>
     }
   }
 
-  void _savePatientData(String firstName, String lastName, DateTime selectedDate,
-      String result) async {
+  void _savePatientData(
+      String firstName,
+      String lastName,
+      DateTime selectedDate,
+      String result,
+      String age,
+      String gender,
+      ) async {
     if (firstName.isNotEmpty && lastName.isNotEmpty) {
       String registrationNo = await generateRegistrationNumber();
       await PatientHelper.savePatient(
@@ -395,6 +425,8 @@ class AdminDashboardState extends State<AdminDashboard>
         date: selectedDate,
         registrationNumber: registrationNo,
         result: result,
+        age: age,
+        gender: gender,
       );
       // Refresh UI or fetch data again to reflect changes
     } else {
@@ -403,15 +435,11 @@ class AdminDashboardState extends State<AdminDashboard>
   }
 
   Future<String> generateRegistrationNumber() async {
-    // Retrieve the current date
     DateTime now = DateTime.now();
-
-    // Extract year, month, and day from the current date
     String year = DateFormat('yy').format(now);
     String month = DateFormat('MM').format(now);
     String day = DateFormat('dd').format(now);
 
-    // Retrieve the last registration number from Firestore
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('patients')
         .orderBy('registrationNo', descending: true)
@@ -423,13 +451,8 @@ class AdminDashboardState extends State<AdminDashboard>
       lastRegistrationNo = snapshot.docs.first.get('registrationNo') as int;
     }
 
-    // Increment the last registration number
     int newRegistrationNo = lastRegistrationNo + 1;
-
-    // Convert the number to a string and pad it with leading zeros
     String paddedNumber = newRegistrationNo.toString().padLeft(4, '0');
-
-    // Generate the registration number with the format 'yy/MM/dd' and the padded number
     String registrationNo = '$year/$month/$day$paddedNumber';
 
     return registrationNo;

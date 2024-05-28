@@ -12,7 +12,9 @@ class PatientHelper {
     required String lastName,
     required String registrationNumber,
     required DateTime date,
-    required String result
+    required String result,
+    required String age,
+    required String gender,
   }) async {
     // Get current package info for build number
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -25,6 +27,8 @@ class PatientHelper {
       "date": date.millisecondsSinceEpoch,
       // Convert DateTime to milliseconds since epoch for Firestore Timestamp
       "result": result,
+      "age": age, //
+      "gender": gender,
     };
 
     // Save patient data to Firestore
