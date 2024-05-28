@@ -320,6 +320,12 @@ class AdminDashboardState extends State<AdminDashboard>
       TextEditingController ageController,
       TextEditingController genderController,
       ) {
+    // Define list of genders
+    List<String> genders = ['Male', 'Female'];
+
+    // Selected gender state variable
+    String selectedGender = genders[0]; // Default selected gender
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -360,9 +366,23 @@ class AdminDashboardState extends State<AdminDashboard>
             decoration: const InputDecoration(labelText: 'Age'),
           ),
           const SizedBox(height: 10),
-          TextField(
-            controller: genderController,
-            decoration: const InputDecoration(labelText: 'Gender'),
+          // Gender dropdown button
+          DropdownButtonFormField<String>(
+            value: selectedGender,
+            items: genders.map((gender) {
+              return DropdownMenuItem<String>(
+                value: gender,
+                child: Text(gender),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedGender = value!;
+              });
+            },
+            decoration: const InputDecoration(
+              labelText: 'Gender',
+            ),
           ),
           const SizedBox(height: 10),
           TextField(
@@ -378,7 +398,7 @@ class AdminDashboardState extends State<AdminDashboard>
                 selectedDate,
                 resultController.text.trim(),
                 ageController.text.trim(),
-                genderController.text.trim(),
+                selectedGender, // Pass selected gender to save method
               );
               Navigator.pop(context);
             },
@@ -395,6 +415,7 @@ class AdminDashboardState extends State<AdminDashboard>
       ),
     );
   }
+
 
   void _saveStaffData(String firstName, String lastName, String email) async {
     if (firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty) {

@@ -39,8 +39,10 @@ class _PatientsOverviewScreenState extends State<PatientsOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey[100],
       appBar: AppBar(
-        title: Text('Patients Overview'),
+        title: Text('Patients Overview', style: TextStyle(color: Colors.blueGrey[900])),
+        backgroundColor: Colors.blueGrey[100],
       ),
       body: FutureBuilder<List<PatientData>>(
         future: _patientDataFuture,
@@ -48,9 +50,9 @@ class _PatientsOverviewScreenState extends State<PatientsOverviewScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error fetching data'));
+            return Center(child: Text('Error fetching data', style: TextStyle(color: Colors.red)));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No data available'));
+            return Center(child: Text('No data available', style: TextStyle(color: Colors.blueGrey[900]))); // Adjusted text color
           } else {
             List<PatientData> data = snapshot.data!;
             int totalPatients = data.length;
@@ -62,8 +64,9 @@ class _PatientsOverviewScreenState extends State<PatientsOverviewScreen> {
                   Text(
                     'Total Patients: $totalPatients',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
+                      color: Colors.blueGrey[900],
                     ),
                   ),
                   SizedBox(height: 20),
@@ -72,6 +75,7 @@ class _PatientsOverviewScreenState extends State<PatientsOverviewScreen> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      color: Colors.blueGrey[900],
                     ),
                   ),
                   SizedBox(height: 20),
@@ -82,6 +86,7 @@ class _PatientsOverviewScreenState extends State<PatientsOverviewScreen> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      color: Colors.blueGrey[900],
                     ),
                   ),
                   SizedBox(height: 20),
@@ -107,14 +112,27 @@ class _PatientsOverviewScreenState extends State<PatientsOverviewScreen> {
 
     return Container(
       height: 300,
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.blueGrey[900],
+      ),
       child: SfCircularChart(
-        legend: Legend(isVisible: true, position: LegendPosition.bottom),
+        legend: Legend(
+          isVisible: true,
+          position: LegendPosition.bottom,
+          textStyle: TextStyle(color: Colors.white),
+        ),
         series: <PieSeries<PatientData, String>>[
           PieSeries<PatientData, String>(
             dataSource: pieData,
             xValueMapper: (PatientData patient, _) => patient.gender,
             yValueMapper: (PatientData patient, _) => patient.count,
-            dataLabelSettings: DataLabelSettings(isVisible: true),
+            dataLabelSettings: DataLabelSettings(
+              isVisible: true,
+              labelPosition: ChartDataLabelPosition.outside,
+              textStyle: TextStyle(color: Colors.white), // Adjust label text color
+            ),
           ),
         ],
       ),
@@ -124,21 +142,40 @@ class _PatientsOverviewScreenState extends State<PatientsOverviewScreen> {
   Widget _buildColumnChart(List<PatientData> data) {
     return Container(
       height: 300,
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.blueGrey[900],
+      ),
       child: SfCartesianChart(
-        legend: Legend(isVisible: true, position: LegendPosition.bottom),
-        primaryXAxis: CategoryAxis(),
+        legend: const Legend(
+          isVisible: true,
+          position: LegendPosition.bottom,
+          textStyle: TextStyle(color: Colors.white),
+        ),
+        primaryXAxis: const CategoryAxis(
+          labelStyle: TextStyle(color: Colors.white, fontSize: 14), // Adjust label text color and size
+        ),
+        primaryYAxis: const NumericAxis(
+          labelStyle: TextStyle(color: Colors.white, fontSize: 14), // Adjust label text color and size
+        ),
         series: <ColumnSeries<PatientData, String>>[
           ColumnSeries<PatientData, String>(
             name: 'Age',
             dataSource: data,
             xValueMapper: (PatientData patient, _) => patient.gender,
             yValueMapper: (PatientData patient, _) => patient.age,
-            dataLabelSettings: DataLabelSettings(isVisible: true),
+            dataLabelSettings: const DataLabelSettings(
+              isVisible: true,
+              labelPosition: ChartDataLabelPosition.inside,
+              textStyle: TextStyle(color: Colors.white), // Adjust label text color
+            ),
           ),
         ],
       ),
     );
   }
+
 }
 
 class PatientData {

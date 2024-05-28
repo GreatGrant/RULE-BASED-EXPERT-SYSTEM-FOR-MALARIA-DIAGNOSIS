@@ -35,30 +35,32 @@ class _ManagePatientsState extends State<ManagePatients> {
         title: const Text('Manage Patients'),
         backgroundColor: Colors.blueGrey[100],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '$greeting, ${auth.currentUser?.displayName ?? ''}!',
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: Colors.blueGrey[900],
-                fontWeight: FontWeight.bold,
+      body: SingleChildScrollView( // Wrap the body with SingleChildScrollView
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '$greeting, ${auth.currentUser?.displayName ?? ''}!',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: Colors.blueGrey[900],
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            SearchBox(
-              hintText: 'Search patients...',
-              icon: Icons.search,
-              onChanged: (value) {
-                setState(() {});
-              },
-              controller: _searchController,
-            ),
-            const SizedBox(height: 26.0),
-            _buildPatientList(),
-          ],
+              const SizedBox(height: 16.0),
+              SearchBox(
+                hintText: 'Search patients...',
+                icon: Icons.search,
+                onChanged: (value) {
+                  setState(() {});
+                },
+                controller: _searchController,
+              ),
+              const SizedBox(height: 26.0),
+              _buildPatientList(),
+            ],
+          ),
         ),
       ),
     );
@@ -90,116 +92,129 @@ class _ManagePatientsState extends State<ManagePatients> {
             );
           }
 
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: filteredPatients.length,
-            itemBuilder: (context, index) {
-              final patient = filteredPatients[index];
-              final patientId = patient.id;
-              final patientData = patient.data() as Map<String, dynamic>;
-              final patientName = patientData['name'] ?? '';
-              final registrationNumber = patientData['registrationNumber'] ?? '';
-              final result = patientData['result'] ?? '';
-              final role = patientData['role'] ?? '';
-              final date = DateFormat.yMMMd().format(DateTime.fromMicrosecondsSinceEpoch(patientData['date']));
+          return SingleChildScrollView( // Wrap the ListView.builder with SingleChildScrollView
+            child: Column(
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(), // Disable scrolling for this ListView
+                  itemCount: filteredPatients.length,
+                  itemBuilder: (context, index) {
+                    final patient = filteredPatients[index];
+                    final patientId = patient.id;
+                    final patientData = patient.data() as Map<String, dynamic>;
+                    final patientName = patientData['name'] ?? '';
+                    final registrationNumber = patientData['registrationNumber'] ?? '';
+                    final result = patientData['result'] ?? '';
+                    final role = patientData['role'] ?? '';
+                    final date = DateFormat.yMMMd().format(DateTime.fromMicrosecondsSinceEpoch(patientData['date']));
 
-              return Card(
-                color: Colors.blueGrey[700],
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                ),
-                child: ExpansionTile(
-                  iconColor: Colors.white,
-                  collapsedIconColor: Colors.white,
-                  title: Text(
-                    patientName,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  children: [
-                    ListTile(
-                      title: Text(
-                        'Name: $patientName',
-                        style: const TextStyle(color: Colors.white),
+                    return Card(
+                      color: Colors.blueGrey[700],
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
                       ),
-                    ),
-                    ListTile(
-                      title: Text(
-                        'Role: $role',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ListTile(
-                      title: Text(
-                        'Result: $result',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ListTile(
-                      title: Text(
-                        'Registration Number: $registrationNumber',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ListTile(
-                      title: Text(
-                        'Date: $date',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              // Navigate to DiagnosisScreen with patient ID
-                              context.push('/diagnosis/$patientId');
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.blueGrey[900],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            child: const Text(
-                              'Diagnose',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
+                      child: ExpansionTile(
+                        iconColor: Colors.white,
+                        collapsedIconColor: Colors.white,
+                        title: Text(
+                          patientName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
-                          const SizedBox(width: 16.0),
-                          TextButton(
-                            onPressed: () {
-                              _deletePatient(patientId);
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.red[700],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            child: const Text(
-                              'Delete Patient',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                        ),
+                        children: [
+                          SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    'Name: $patientName',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    'Role: $role',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    'Result: $result',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    'Registration Number: $registrationNumber',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    'Date: $date',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Row(
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // Navigate to DiagnosisScreen with patient ID
+                                          context.push('/diagnosis/$patientId');
+                                        },
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: Colors.blueGrey[900],
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Diagnose',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16.0),
+                                      TextButton(
+                                        onPressed: () {
+                                          _deletePatient(patientId);
+                                        },
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: Colors.red[700],
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Delete Patient',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
+              ],
+            ),
           );
         } else {
           return const Center(child: CircularProgressIndicator());
@@ -207,6 +222,7 @@ class _ManagePatientsState extends State<ManagePatients> {
       },
     );
   }
+
 
   String _getGreeting(int hour) {
     if (hour < 12) {
