@@ -151,4 +151,18 @@ class UserHelper {
       showSnackBar(context, e.message!);
     }
   }
+
+  Future<void> resetPassword(BuildContext context, String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: email
+      );
+      if (!context.mounted) return;
+      showSnackBar(context, 'Password reset email sent!');
+    } catch (e) {
+      if (!context.mounted) return;
+      showSnackBar(context, 'Failed to send reset email: $e');
+    }
+  }
+
 }
