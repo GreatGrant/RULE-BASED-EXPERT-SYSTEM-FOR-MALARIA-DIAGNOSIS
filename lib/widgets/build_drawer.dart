@@ -2,35 +2,42 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../services/user_helper.dart';
-
-Drawer buildDrawer(BuildContext context) {
-  return Drawer(
-    child: ListView(
-      padding: EdgeInsets.zero,
-      children: [
-        DrawerHeader(
-          decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-          ),
-          child: const Text(
-            'Menu',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
+PreferredSize buildAppBar(BuildContext context) {
+  return PreferredSize(
+    preferredSize: const Size.fromHeight(70.0),
+    child: SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 18.0,
+          vertical: 20.0,
+        ),
+        child: Row(
+          children: [
+            Builder( // Wrap IconButton with Builder to get the correct context
+              builder: (BuildContext context) {
+                return IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer(); // Open the drawer using Scaffold.of(context)
+                  },
+                );
+              },
             ),
-          ),
+            Text(
+              "Admin Dashboard",
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey[900],
+              ),
+            ),
+          ],
         ),
-        ListTile(
-          leading: const Icon(Icons.logout),
-          title: const Text('Logout'),
-          onTap: () {
-            _logout(context);
-          },
-        ),
-      ],
+      ),
     ),
   );
 }
+
 
 
 void _logout(BuildContext context) async{

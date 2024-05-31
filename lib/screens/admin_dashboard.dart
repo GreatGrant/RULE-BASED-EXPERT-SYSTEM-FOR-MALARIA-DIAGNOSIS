@@ -52,7 +52,35 @@ class AdminDashboardState extends State<AdminDashboard>
     final theme = Theme.of(context);
     return Scaffold(
       appBar: buildAppBar(context),
-      drawer: buildDrawer(context),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blueGrey[900],
+              ),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.blueGrey[900]),
+              title: Text(
+                'Logout',
+                style: TextStyle(color: Colors.blueGrey[900]),
+              ),
+              onTap: () {
+                UserHelper.logOut();
+              },
+            ),
+          ],
+        ),
+      ),
       backgroundColor: Colors.blueGrey[100],
       body: Column(
         children: [
@@ -502,10 +530,14 @@ class AdminDashboardState extends State<AdminDashboard>
           ),
           child: Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
+              Builder( // Wrap IconButton with Builder to get the correct context
+                builder: (BuildContext context) {
+                  return IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer(); // Open the drawer using Scaffold.of(context)
+                    },
+                  );
                 },
               ),
               Text(
@@ -522,4 +554,5 @@ class AdminDashboardState extends State<AdminDashboard>
       ),
     );
   }
+
 }
