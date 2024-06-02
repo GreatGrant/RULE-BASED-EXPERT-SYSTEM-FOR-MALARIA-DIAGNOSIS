@@ -85,8 +85,12 @@ class SignupFormState extends State<SignupForm> {
                 controller: _firstNameController,
                 decoration: const InputDecoration(
                   labelText: 'First Name',
+                  labelStyle: TextStyle(color: Colors.blueGrey),
                   prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
                 ),
                 validator: (value) =>
                 value!.isEmpty ? 'Please enter your first name' : null,
@@ -96,8 +100,12 @@ class SignupFormState extends State<SignupForm> {
                 controller: _lastNameController,
                 decoration: const InputDecoration(
                   labelText: 'Last Name',
+                  labelStyle: TextStyle(color: Colors.blueGrey),
                   prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
                 ),
                 validator: (value) =>
                 value!.isEmpty ? 'Please enter your last name' : null,
@@ -109,8 +117,12 @@ class SignupFormState extends State<SignupForm> {
                 decoration: const InputDecoration(
                   labelText: 'Email',
                   hintText: 'Enter your email',
+                  labelStyle: TextStyle(color: Colors.blueGrey),
                   prefixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
                 ),
                 validator: _validateEmail,
               ),
@@ -121,8 +133,12 @@ class SignupFormState extends State<SignupForm> {
                 decoration: const InputDecoration(
                   labelText: 'Password',
                   hintText: 'Enter your password',
+                  labelStyle: TextStyle(color: Colors.blueGrey),
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
                 ),
                 validator: _validatePassword,
               ),
@@ -133,8 +149,12 @@ class SignupFormState extends State<SignupForm> {
                 decoration: const InputDecoration(
                   labelText: 'Confirm Password',
                   hintText: 'Confirm your password',
+                  labelStyle: TextStyle(color: Colors.blueGrey),
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
                 ),
                 validator: _validateConfirmPassword,
               ),

@@ -48,19 +48,26 @@ class _LoginFormState extends State<LoginForm> {
             decoration: const InputDecoration(
               hintText: 'Enter your email',
               labelText: 'Email',
+              labelStyle: TextStyle(color: Colors.blueGrey),
               prefixIcon: Icon(Icons.email),
               border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.green),              ),
             ),
           ),
           const SizedBox(height: 20),
           TextField(
             obscureText: true,
             controller: _passwordController,
-            decoration: const InputDecoration(
+            decoration:  const InputDecoration(
               hintText: 'Enter your password',
               labelText: 'Password',
+              labelStyle: TextStyle(color: Colors.blueGrey),
               prefixIcon: Icon(Icons.lock),
               border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.green),
+            ),
             ),
           ),
           const SizedBox(height: 20),
