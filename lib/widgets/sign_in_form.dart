@@ -16,7 +16,7 @@ class SignupFormState extends State<SignupForm> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   void signUpUser(String firstName, String lastName, String email,
       String password, BuildContext context) {
@@ -41,6 +41,26 @@ class SignupFormState extends State<SignupForm> {
     return null;
   }
 
+  String? _validatePassword(String? password) {
+    if (password == null || password.isEmpty) {
+      return 'Please enter your password';
+    }
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? confirmPassword) {
+    if (confirmPassword == null || confirmPassword.isEmpty) {
+      return 'Please confirm your password';
+    }
+    if (confirmPassword != _passwordController.text) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -48,6 +68,7 @@ class SignupFormState extends State<SignupForm> {
     _lastNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
   }
 
   @override
@@ -64,7 +85,7 @@ class SignupFormState extends State<SignupForm> {
                 controller: _firstNameController,
                 decoration: const InputDecoration(
                   labelText: 'First Name',
-                  prefixIcon: Icon(Icons.book),
+                  prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) =>
@@ -75,7 +96,7 @@ class SignupFormState extends State<SignupForm> {
                 controller: _lastNameController,
                 decoration: const InputDecoration(
                   labelText: 'Last Name',
-                  prefixIcon: Icon(Icons.book),
+                  prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) =>
@@ -103,8 +124,19 @@ class SignupFormState extends State<SignupForm> {
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) =>
-                value!.isEmpty ? 'Please enter your password' : null,
+                validator: _validatePassword,
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Confirm Password',
+                  hintText: 'Confirm your password',
+                  prefixIcon: Icon(Icons.lock),
+                  border: OutlineInputBorder(),
+                ),
+                validator: _validateConfirmPassword,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
