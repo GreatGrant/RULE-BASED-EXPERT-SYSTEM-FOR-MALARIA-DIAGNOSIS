@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'auth_button.dart';
@@ -43,7 +42,7 @@ class _LoginFormState extends State<LoginForm> {
             style: TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 8),
-          TextField(
+          TextFormField(
             controller: _emailController,
             decoration: const InputDecoration(
               hintText: 'Enter your email',
@@ -52,11 +51,12 @@ class _LoginFormState extends State<LoginForm> {
               prefixIcon: Icon(Icons.email),
               border: OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.green),              ),
+                borderSide: BorderSide(color: Colors.green),
+              ),
             ),
           ),
           const SizedBox(height: 20),
-          TextField(
+          TextFormField(
             obscureText: true,
             controller: _passwordController,
             decoration:  const InputDecoration(
@@ -67,7 +67,7 @@ class _LoginFormState extends State<LoginForm> {
               border: OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.green),
-            ),
+              ),
             ),
           ),
           const SizedBox(height: 20),
