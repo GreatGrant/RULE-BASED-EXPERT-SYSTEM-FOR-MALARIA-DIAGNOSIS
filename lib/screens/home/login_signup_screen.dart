@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'common/common_widgets.dart';
-import '../services/user_helper.dart';
-import '../screens/admin_dashboard.dart';
-import '../screens/manage_patients.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/home/widgets/login_signup_card.dart';
+import '../../common/loading_indicator.dart';
+import '../../services/user_helper.dart';
+import '../admin_dashboard/admin_dashboard.dart';
+import '../manage_patients/manage_patients.dart';
 
 class LoginSignUpScreen extends StatefulWidget {
   final String title;

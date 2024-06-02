@@ -1,24 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/home/widgets/sign_up_form.dart';
 
-import '../../widgets/login_form.dart';
-import '../../widgets/sign_in_form.dart';
-
-class LoadingIndicator extends StatelessWidget {
-  const LoadingIndicator({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Material(
-      child: Center(
-        child: CircularProgressIndicator(
-          color: Colors.blueGrey,
-        ),
-      ),
-    );
-  }
-}
+import 'login_form.dart';
 
 class LoginSignUpCard extends StatefulWidget {
   final String title;

@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
-import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard.dart';
-import 'package:rbes_for_malaria_diagnosis/screens/diagnosis_screen.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard/admin_dashboard.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/diagnosis/diagnosis_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/forgot_password_page.dart';
 import '../main.dart';
 import '../screens/edit_staff_details.dart';
-import '../screens/login_signup_screen.dart';
-import '../screens/manage_patients.dart';
-import '../screens/manage_staff.dart';
+import '../screens/home/login_signup_screen.dart';
+import '../screens/manage_patients/manage_patients.dart';
+import '../screens/manage_staff/manage_staff.dart';
 import '../screens/patients_overview_screen.dart';
 import '../screens/staff_overview_screen.dart';
 

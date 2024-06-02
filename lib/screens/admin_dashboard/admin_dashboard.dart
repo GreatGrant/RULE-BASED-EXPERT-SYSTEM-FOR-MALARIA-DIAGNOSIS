@@ -1,16 +1,14 @@
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rbes_for_malaria_diagnosis/util/show_snackbar.dart';
-import 'package:rbes_for_malaria_diagnosis/widgets/custom_tab.dart';
-import '../models/user_info.dart';
-import '../services/patient_helper.dart';
-import '../services/user_helper.dart';
-import '../widgets/build_drawer.dart';
-import '../widgets/searchbox.dart';
-import '../widgets/custom_tabbar_view.dart';
-import '../widgets/user_event_tab_bar_view.dart';
+import '../../common/custom_tab.dart';
+import '../../common/custom_tabbar_view.dart';
+import '../../common/searchbox.dart';
+import '../../common/user_event_tab_bar_view.dart';
+import '../../models/user_info.dart';
+import '../../services/patient_helper.dart';
+import '../../services/user_helper.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});

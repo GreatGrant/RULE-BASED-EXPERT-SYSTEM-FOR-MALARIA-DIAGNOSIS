@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../services/auth_service.dart';
+import '../../../services/auth_service.dart';
+import 'auth_button.dart';
 
 class SignupForm extends StatefulWidget {
-  const SignupForm({super.key});
+  const SignupForm({Key? key}) : super(key: key);
 
   @override
   SignupFormState createState() => SignupFormState();
@@ -139,7 +139,8 @@ class SignupFormState extends State<SignupForm> {
                 validator: _validateConfirmPassword,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
+              AuthElevatedButton(
+                text: 'Sign Up',
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     // Form is valid
@@ -156,20 +157,6 @@ class SignupFormState extends State<SignupForm> {
                     );
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 15,
-                  ),
-                  backgroundColor: Colors.blueGrey[900],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: const Text(
-                  'Sign Up',
-                  style: TextStyle(color: Colors.white),
-                ),
               ),
             ],
           ),

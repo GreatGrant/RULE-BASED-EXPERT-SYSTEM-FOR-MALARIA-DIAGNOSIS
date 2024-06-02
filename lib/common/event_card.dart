@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/models/user_info.dart';
 import 'package:flutter/material.dart';
-import 'package:rbes_for_malaria_diagnosis/screens/manage_patients.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/manage_patients/manage_patients.dart';
 
 class UserEventCard extends StatelessWidget {
   final UserInfo event;

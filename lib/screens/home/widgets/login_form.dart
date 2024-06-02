@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../services/auth_service.dart';
+import '../../common/common_widgets.dart';
+import 'auth_button.dart';
+import '../../../services/auth_service.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  const LoginForm({Key? key}) : super(key: key);
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -17,9 +18,9 @@ class _LoginFormState extends State<LoginForm> {
 
   void loginUser(String email, String password, BuildContext context) {
     AuthService.signInWithEmail(
-        context: context,
-        email: email,
-        password: password
+      context: context,
+      email: email,
+      password: password,
     );
   }
 
@@ -64,24 +65,19 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
+          AuthElevatedButton(
+            text: 'Login',
             onPressed: () {
               String email = _emailController.text;
               String password = _passwordController.text;
               loginUser(email, password, context);
             },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-              backgroundColor: Colors.blueGrey[900],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            child: const Text('Login', style: TextStyle(color: Colors.white)),
           ),
-          const SizedBox(height: 8,),
+          const SizedBox(height: 8),
           TextButton(
-            onPressed: () { context.push('/forgot_password'); },
+            onPressed: () {
+              context.push('/forgot_password');
+            },
             child: Text(
               "Forgot Password?",
               style: TextStyle(
@@ -89,7 +85,7 @@ class _LoginFormState extends State<LoginForm> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
