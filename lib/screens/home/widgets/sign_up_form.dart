@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../services/auth_service.dart';
 import 'auth_button.dart';
+import '../../../services/auth_service.dart';
 
 class SignupForm extends StatefulWidget {
   const SignupForm({Key? key}) : super(key: key);
@@ -16,7 +15,8 @@ class SignupFormState extends State<SignupForm> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   void signUpUser(String firstName, String lastName, String email,
       String password, BuildContext context) {
@@ -25,8 +25,7 @@ class SignupFormState extends State<SignupForm> {
         password: password,
         firstName: firstName,
         lastName: lastName,
-        context: context
-    );
+        context: context);
   }
 
   String? _validateEmail(String? email) {
@@ -93,7 +92,11 @@ class SignupFormState extends State<SignupForm> {
                   ),
                 ),
                 validator: (value) =>
-                value!.isEmpty ? 'Please enter your first name' : null,
+                    value!.isEmpty ? 'Please enter your first name' : null,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).nextFocus();
+                },
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -108,7 +111,11 @@ class SignupFormState extends State<SignupForm> {
                   ),
                 ),
                 validator: (value) =>
-                value!.isEmpty ? 'Please enter your last name' : null,
+                    value!.isEmpty ? 'Please enter your last name' : null,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).nextFocus();
+                },
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -125,6 +132,10 @@ class SignupFormState extends State<SignupForm> {
                   ),
                 ),
                 validator: _validateEmail,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).nextFocus();
+                },
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -141,6 +152,10 @@ class SignupFormState extends State<SignupForm> {
                   ),
                 ),
                 validator: _validatePassword,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).nextFocus();
+                },
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -157,13 +172,30 @@ class SignupFormState extends State<SignupForm> {
                   ),
                 ),
                 validator: _validateConfirmPassword,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) {
+                  if (_formKey.currentState!.validate()) {
+                    // Form is valid, sign up the user
+                    String firstName = _firstNameController.text;
+                    String lastName = _lastNameController.text;
+                    String email = _emailController.text;
+                    String password = _passwordController.text;
+                    signUpUser(
+                      firstName,
+                      lastName,
+                      email,
+                      password,
+                      context,
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 20),
               AuthElevatedButton(
                 text: 'Sign Up',
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Form is valid
+                    // Form is valid, sign up the user
                     String firstName = _firstNameController.text;
                     String lastName = _lastNameController.text;
                     String email = _emailController.text;
