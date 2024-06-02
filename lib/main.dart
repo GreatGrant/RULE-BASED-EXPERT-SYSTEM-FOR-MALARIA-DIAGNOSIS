@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'app_theme.dart';
 import 'firebase_options.dart';
 import 'navigation/go_router.dart';
 
@@ -20,35 +21,4 @@ class MalariaApp extends StatelessWidget {
       theme: appTheme(),
     );
   }
-}
-
-ThemeData appTheme() {
-  return ThemeData(
-    cardTheme: CardTheme(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(
-          color: Colors.blueGrey[900]!, // Set the focused border color here
-        ),
-      ),
-      filled: true,
-      fillColor: Colors.grey[200],
-    ),
-    indicatorColor: Colors.blueGrey[900],
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-        backgroundColor: Colors.blueGrey[900],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-    ),
-  );
 }
