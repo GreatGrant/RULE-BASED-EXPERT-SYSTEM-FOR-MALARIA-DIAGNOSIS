@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rbes_for_malaria_diagnosis/common/loading_indicator.dart';
 import 'package:rbes_for_malaria_diagnosis/util/show_snackbar.dart';
 import '../../common/custom_tab.dart';
 import '../../common/custom_tabbar_view.dart';
@@ -212,7 +213,7 @@ class AdminDashboardState extends State<AdminDashboard>
                           );
                         } else {
                           return const Center(
-                            child: CircularProgressIndicator(),
+                            child: LoadingIndicator(),
                           );
                         }
                       },
