@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../services/auth_service.dart';
 
@@ -80,7 +81,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 8,),
           TextButton(
-            onPressed: () {},
+            onPressed: () { context.push('/forgot_password'); },
             child: Text(
               "Forgot Password?",
               style: TextStyle(

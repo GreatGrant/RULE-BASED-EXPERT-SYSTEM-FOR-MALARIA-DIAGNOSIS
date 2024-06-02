@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
 import '../util/show_snackbar.dart';
 
 class UserHelper {
@@ -20,7 +19,6 @@ class UserHelper {
     required BuildContext context,
   }) async {
     try {
-      // Create data object for staff
       Map<String, dynamic> staffData = {
         "email": email,
         "name": name,
@@ -28,8 +26,6 @@ class UserHelper {
         "department": department,
         "age": age,
       };
-
-      // Save staff data to Firestore
       await _db.collection("staff").add(staffData);
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) {
@@ -95,11 +91,7 @@ class UserHelper {
     }
 
     final nowMS = DateTime.now().toUtc().millisecondsSinceEpoch;
-    final deviceRef = _db
-        .collection("users")
-        .doc(user.uid)
-        .collection("devices")
-        .doc(deviceId);
+    final deviceRef = _db.collection("users").doc(user.uid).collection("devices").doc(deviceId);
 
     if ((await deviceRef.get()).exists) {
       await deviceRef.update({
@@ -123,7 +115,6 @@ class UserHelper {
 
   static Future<void> deleteStaff(BuildContext context, String staffId) async {
     try {
-      // Delete staff document from Firestore
       await _db.collection("staff").doc(staffId).delete();
     } on FirebaseException catch (e) {
       if (kDebugMode) {
@@ -154,9 +145,7 @@ class UserHelper {
 
   Future<void> resetPassword(BuildContext context, String email) async {
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(
-        email: email
-      );
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       if (!context.mounted) return;
       showSnackBar(context, 'Password reset email sent!');
     } catch (e) {
@@ -165,4 +154,7 @@ class UserHelper {
     }
   }
 
+  static Stream<DocumentSnapshot> fetchUserDocument(String uid) {
+    return _db.collection("users").doc(uid).snapshots();
+  }
 }
