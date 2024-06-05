@@ -2,6 +2,17 @@ import 'package:flutter/material.dart';
 
 ThemeData appTheme() {
   return ThemeData(
+    scaffoldBackgroundColor: Colors.blueGrey[100],
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.blueGrey[100],
+      iconTheme: const IconThemeData(color: Colors.black),
+      titleTextStyle: const TextStyle(
+        color: Colors.black,
+        fontFamily: 'Poppins',
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
     textTheme: appTextTheme(),
     cardTheme: CardTheme(
       elevation: 4,
@@ -18,6 +29,11 @@ ThemeData appTheme() {
       ),
       filled: true,
       fillColor: Colors.grey[200],
+      labelStyle: const TextStyle(color: Colors.blueGrey),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: Colors.green),
+      ),
     ),
     indicatorColor: Colors.blueGrey[900],
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -31,7 +47,6 @@ ThemeData appTheme() {
     ),
   );
 }
-
 
 TextTheme appTextTheme() {
   return const TextTheme(
