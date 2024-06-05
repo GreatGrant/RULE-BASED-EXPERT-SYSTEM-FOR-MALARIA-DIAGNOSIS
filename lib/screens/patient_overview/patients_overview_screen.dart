@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../../common/loading_indicator.dart';
+
 class PatientsOverviewScreen extends StatefulWidget {
   const PatientsOverviewScreen({Key? key}) : super(key: key);
 
@@ -48,7 +50,7 @@ class _PatientsOverviewScreenState extends State<PatientsOverviewScreen> {
         future: _patientDataFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child:  LoadingIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error fetching data', style: TextStyle(color: Colors.red)));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
