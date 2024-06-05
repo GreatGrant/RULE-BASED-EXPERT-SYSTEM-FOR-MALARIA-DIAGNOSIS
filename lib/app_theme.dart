@@ -13,6 +13,24 @@ ThemeData appTheme() {
         fontWeight: FontWeight.bold,
       ),
     ),
+
+    dialogTheme: DialogTheme(
+      backgroundColor: Colors.white, // Dialog background color
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      titleTextStyle: const TextStyle(
+        color: Colors.black,
+        fontFamily: 'Poppins',
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      contentTextStyle: const TextStyle(
+        color: Colors.black87,
+        fontFamily: 'Roboto',
+        fontSize: 16,
+      ),
+    ),
     textTheme: appTextTheme(),
     cardTheme: CardTheme(
       elevation: 4,
