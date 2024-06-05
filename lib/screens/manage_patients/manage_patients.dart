@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rbes_for_malaria_diagnosis/common/loading_indicator.dart';
 import 'package:rbes_for_malaria_diagnosis/services/patient_helper.dart';
 
 import '../../common/searchbox.dart';
@@ -218,7 +219,7 @@ class _ManagePatientsState extends State<ManagePatients> {
             ),
           );
         } else {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: LoadingIndicator());
         }
       },
     );
