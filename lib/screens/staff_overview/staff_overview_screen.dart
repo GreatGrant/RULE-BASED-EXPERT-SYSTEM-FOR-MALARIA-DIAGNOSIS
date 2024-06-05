@@ -29,7 +29,7 @@ class _StaffOverviewScreenState extends State<StaffOverviewScreen> {
         future: _staffDataFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child:  LoadingIndicator());
           } else if (snapshot.hasError) {
             return const Center(child: Text('Error fetching data', style: TextStyle(color: Colors.red)));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
