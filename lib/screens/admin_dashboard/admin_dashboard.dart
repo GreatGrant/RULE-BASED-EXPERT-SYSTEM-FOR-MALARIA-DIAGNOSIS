@@ -59,7 +59,7 @@ class AdminDashboardState extends State<AdminDashboard>
               decoration: BoxDecoration(
                 color: Colors.blueGrey[900],
               ),
-              child: Text(
+              child: const Text(
                 'Menu',
                 style: TextStyle(
                   color: Colors.white,

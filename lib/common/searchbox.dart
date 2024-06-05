@@ -7,28 +7,23 @@ class SearchBox extends StatelessWidget {
   final void Function(String)? onChanged;
 
   const SearchBox({
-    super.key,
+    Key? key,
     required this.hintText,
     required this.icon,
     required this.controller,
     this.onChanged,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Container(
-      width: double.infinity,
-      height: 55.0,
       margin: const EdgeInsets.symmetric(horizontal: 18.0),
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      alignment: Alignment.center,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(30.0), // Adjust the radius as needed
+        color: Colors.grey[200],
         boxShadow: [
           BoxShadow(
-            color: theme.primaryColor.withOpacity(.2),
+            color: Colors.green.withOpacity(.2),
             blurRadius: 7.0,
             spreadRadius: 1,
             offset: const Offset(2, 4),
@@ -37,13 +32,20 @@ class SearchBox extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
-        cursorColor: theme.primaryColor,
         onChanged: onChanged,
+        cursorColor: Colors.green,
         decoration: InputDecoration(
-          icon: Icon(icon, size: 25.0,),
-          border: InputBorder.none,
+          prefixIcon: Icon(icon, color: Colors.blueGrey),
           hintText: hintText,
-          hintStyle: theme.textTheme.titleMedium,
+          hintStyle: const TextStyle(color: Colors.blueGrey),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30.0), // Adjust the radius to match the container
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30.0), // Adjust the radius to match the container
+            borderSide: const BorderSide(color: Colors.green),
+          ),
         ),
       ),
     );

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import '../screens/staff_overview/staff_overview_screen.dart';
 import '../util/show_snackbar.dart';
 
 class UserHelper {
@@ -61,6 +62,24 @@ class UserHelper {
     }
 
     await _saveDevice(user);
+  }
+
+
+  static Future<List<StaffData>> fetchStaffData(BuildContext context) async {
+    List<StaffData> staffDataList = [];
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('staff').get();
+      for (var doc in snapshot.docs) {
+        String department = doc['department'] ?? 'Unknown';
+        int age = int.parse(doc['age'] ?? '0');
+        staffDataList.add(StaffData(department, 1, age));
+      }
+      return staffDataList;
+    }on FirebaseAuthException catch (e) {
+      if (!context.mounted) return[];
+      showSnackBar(context, e.message!);
+      return [];
+    }
   }
 
   static Future<void> _saveDevice(User user) async {

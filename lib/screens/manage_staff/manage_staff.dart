@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
 import '../../common/searchbox.dart';
-import '../edit_staff_details.dart';
+import '../edit_staff/edit_staff_details.dart';
 
 class ManageStaff extends StatefulWidget {
   const ManageStaff({super.key});

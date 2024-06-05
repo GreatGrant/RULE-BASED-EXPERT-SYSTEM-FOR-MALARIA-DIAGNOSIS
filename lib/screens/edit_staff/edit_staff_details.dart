@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../services/user_helper.dart';
+import '../../services/user_helper.dart';
 
 class EditStaffDetailsPage extends StatefulWidget {
   final String staffId;
