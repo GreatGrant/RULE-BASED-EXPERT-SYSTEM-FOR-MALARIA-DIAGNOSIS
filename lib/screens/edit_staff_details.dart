@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import '../services/user_helper.dart';
 
 class EditStaffDetailsPage extends StatefulWidget {
@@ -19,6 +18,7 @@ class EditStaffDetailsPage extends StatefulWidget {
   @override
   State<EditStaffDetailsPage> createState() => _EditStaffDetailsPageState();
 }
+
 class _EditStaffDetailsPageState extends State<EditStaffDetailsPage> {
   late TextEditingController _nameController = TextEditingController(text: widget.name);
   late TextEditingController _emailController = TextEditingController(text: widget.email);
@@ -33,33 +33,52 @@ class _EditStaffDetailsPageState extends State<EditStaffDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey[100],
       appBar: AppBar(
-        title: Text('Edit Staff Details'),
+        title: const Text('Edit Staff Details'),
+        backgroundColor: Colors.blueGrey[100],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Staff ID: ${widget.staffId}'),
-            SizedBox(height: 10),
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _saveChanges(context, widget.staffId, _nameController.text, _emailController.text);
-              },
-              child: Text('Save Changes'),
-            ),
-          ],
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Staff ID: ${widget.staffId}'),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                    labelText: 'Name',
+                  labelStyle: TextStyle(color: Colors.blueGrey),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: TextStyle(color: Colors.blueGrey),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    _saveChanges(context, widget.staffId, _nameController.text, _emailController.text);
+                  },
+                  child: const Text('Save Changes', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -25,7 +25,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                 controller: emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
+                  labelStyle: TextStyle(color: Colors.blueGrey),
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
