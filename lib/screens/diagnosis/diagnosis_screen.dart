@@ -55,15 +55,15 @@ class DiagnosisScreenState extends State<DiagnosisScreen> {
     // Define recommendations based on diagnosis
     String recommendation = '';
     if (diagnosisResult == 'Malaria') {
-      recommendation = 'Please consult a doctor immediately for further evaluation and treatment.';
+      recommendation = 'Please advise the patient to consult a healthcare professional immediately for further evaluation and treatment.';
     } else if (diagnosisResult == 'Possible Malaria') {
-      recommendation = 'Consider visiting a healthcare professional for assessment.';
+      recommendation = 'Please consider further assessment by a healthcare professional.';
     } else {
-      recommendation = "It's advisable to monitor your symptoms and seek medical advice if they persist or worsen.";
-      }
+      recommendation = "It's advisable to monitor the patient's symptoms closely and recommend seeking medical advice if they persist or worsen.";
+    }
 
-      // Show diagnosis result after diagnosis
-      showDialog(
+    // Show diagnosis result after diagnosis
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -105,13 +105,13 @@ class DiagnosisScreenState extends State<DiagnosisScreen> {
     );
   }
 
-  void _saveDiagnosisResult(double diagnosisProbability){
-  PatientHelper.saveDiagnosis(
-      diagnosisResult: diagnosisResult,
-      diagnosisProbability: diagnosisProbability,
-      patientId: widget.patientId,
-      context: context
-  );
+  void _saveDiagnosisResult(double diagnosisProbability) {
+    PatientHelper.saveDiagnosis(
+        diagnosisResult: diagnosisResult,
+        diagnosisProbability: diagnosisProbability,
+        patientId: widget.patientId,
+        context: context
+    );
   }
 
   @override
@@ -238,7 +238,7 @@ class DiagnosisScreenState extends State<DiagnosisScreen> {
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.blueGrey[900])),
             onPressed: () {
-              if(selectedSymptoms.isEmpty) {
+              if (selectedSymptoms.isEmpty) {
                 // Show error message if no symptoms are selected
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -251,7 +251,6 @@ class DiagnosisScreenState extends State<DiagnosisScreen> {
             },
             child: const Text('Diagnose', style: TextStyle(color: Colors.white),),
           ),
-
         ],
       ),
     );
@@ -275,77 +274,44 @@ DiagnosisResult diagnoseMalaria(List<String> symptoms) {
   double probability = 0.0;
   List<String> matchedSymptoms = [];
 
-// Define all symptom combinations and their corresponding diagnoses and probabilities
+  // Define all symptom combinations and their corresponding diagnoses and probabilities
   Map<List<String>, Map<String, double>> rules = {
-    // Example 1: Malaria
+    // Malaria
     ['Fever', 'Chills', 'Headache', 'Nausea', 'Muscle Aches', 'Fatigue', 'Vomiting']: {'Malaria': 0.9},
-
-    // Example 2: Possible Malaria
     ['Fever', 'Chills', 'Headache', 'Nausea', 'Muscle Aches', 'Fatigue']: {'Possible Malaria': 0.85},
-
-    // Example 3: Malaria (Variant 2)
     ['Fever', 'Chills', 'Headache', 'Nausea', 'Muscle Aches']: {'Possible Malaria': 0.7},
-
-    // Example 4: Malaria (Variant 3)
     ['Fever', 'Chills', 'Headache', 'Nausea']: {'Possible Malaria': 0.65},
-
-    // Example 5: Malaria (Variant 4)
     ['Fever', 'Chills', 'Headache']: {'Possible Malaria': 0.6},
 
-    // Example 6: Migraine
+    // Other Diagnoses
     ['Headache']: {'Migraine': 0.8},
-
-    // Example 7: Possible Cold
     ['Fever', 'Headache']: {'Possible Cold': 0.5},
-
-    // Example 8: Flu
     ['Fever', 'Muscle Aches', 'Fatigue']: {'Flu': 0.7},
-
-    // Example 9: Fatigue Syndrome
     ['Fatigue']: {'Fatigue Syndrome': 0.6},
-
-    // Example 10: Gastroenteritis
     ['Fever', 'Headache', 'Vomiting']: {'Gastroenteritis': 0.6},
-
-    // Example 11: Dengue Fever
     ['Fever', 'Muscle Aches']: {'Dengue Fever': 0.7},
-
-    // Example 12: Typhoid Fever
-    ['Fever', 'Shivering', 'Muscle Aches']: {'Typhoid Fever': 0.8},
-
-    // Example 13: Flu (Variant 2)
-    ['Shivering', 'Headache']: {'Flu': 0.6},
-
-    // Example 14: Influenza
-    ['Fever', 'Shivering', 'Muscle Aches', 'Fatigue']: {'Influenza': 0.8},
-
-    // Example 15: Common Cold
-    ['Shivering', 'Muscle Aches']: {'Common Cold': 0.6},
-
-    // Example 16: Stomach Flu
+    ['Fever', 'Chills', 'Muscle Aches']: {'Typhoid Fever': 0.8},
+    ['Chills', 'Headache']: {'Flu': 0.6},
+    ['Fever', 'Chills', 'Muscle Aches', 'Fatigue']: {'Influenza': 0.8},
+    ['Chills', 'Muscle Aches']: {'Common Cold': 0.6},
     ['Fever', 'Nausea', 'Vomiting']: {'Stomach Flu': 0.7},
-
-    // Example 17: Food Poisoning
     ['Vomiting', 'Diarrhea']: {'Food Poisoning': 0.8},
-
-    // Example 18: Heat Exhaustion
     ['Fever', 'Sweating']: {'Heat Exhaustion': 0.6},
-
-    // Example 19: Hyperhidrosis
     ['Sweating']: {'Hyperhidrosis': 0.7},
-
-    // Example 20: Possible Food Poisoning
     ['Fever', 'Diarrhea']: {'Possible Food Poisoning': 0.5},
-
-    // Example 21: Gastrointestinal Infection
     ['Diarrhea']: {'Gastrointestinal Infection': 0.6},
-
-    // Example 22: Muscle Strain
     ['Muscle Aches']: {'Muscle Strain': 0.6},
 
-    // Add more rules as needed...
+    // Additional Rules
+    ['Fever', 'Chills', 'Headache', 'Fatigue', 'Sweating']: {'Possible Malaria': 0.75},
+    ['Fever', 'Chills', 'Headache', 'Muscle Aches', 'Sweating']: {'Possible Malaria': 0.8},
+    ['Fever', 'Chills', 'Headache', 'Fatigue', 'Loss of Appetite']: {'Possible Malaria': 0.7},
+    ['Fever', 'Chills', 'Headache', 'Fatigue', 'Rapid Heart Rate']: {'Possible Malaria': 0.7},
+    ['Fever', 'Chills', 'Headache', 'Nausea', 'Dizziness']: {'Possible Malaria': 0.65},
+    ['Fever', 'Chills', 'Headache', 'Nausea', 'Abdominal Pain']: {'Possible Malaria': 0.65},
+    ['Fever', 'Chills', 'Headache', 'Nausea', 'Jaundice']: {'Possible Malaria': 0.8},
+    ['Fever', 'Chills', 'Headache', 'Nausea', 'Weakness']: {'Possible Malaria': 0.7},
   };
-
 
   // Check if any symptom combination matches the selected symptoms
   for (var entry in rules.entries) {
