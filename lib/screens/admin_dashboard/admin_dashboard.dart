@@ -83,7 +83,6 @@ class AdminDashboardState extends State<AdminDashboard>
       backgroundColor: Colors.blueGrey[100],
       body: Column(
         children: [
-          const SizedBox(height: 15.0),
           SearchBox(
             hintText: 'Search patient or staff',
             icon: Icons.search,
