@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../../common/loading_indicator.dart';
+
 class StaffOverviewScreen extends StatefulWidget {
   const StaffOverviewScreen({super.key});
 
