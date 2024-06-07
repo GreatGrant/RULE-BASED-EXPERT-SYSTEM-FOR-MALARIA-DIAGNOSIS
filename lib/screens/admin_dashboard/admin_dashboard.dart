@@ -23,6 +23,7 @@ class AdminDashboardState extends State<AdminDashboard>
   TabController? _controller;
   late TextEditingController _searchController;
   String _selectedTab = 'staff'; // Default selected tab
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -34,8 +35,16 @@ class AdminDashboardState extends State<AdminDashboard>
         setState(() {
           // Update the selected tab
           _selectedTab = _controller!.index == 0 ? 'staff' : 'patients';
+          _searchQuery = '';
+          _searchController.clear();
         });
       }
+    });
+
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text.trim();
+      });
     });
   }
 
@@ -145,16 +154,33 @@ class AdminDashboardState extends State<AdminDashboard>
                   const SizedBox(height: 12),
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection(
-                          _selectedTab == 'staff' ? "staff" : "patients")
-                          .where('role',
-                          isEqualTo: _selectedTab == 'staff'
-                              ? 'staff'
-                              : 'patient')
-                          .snapshots(),
+                      stream: _getFilteredStream(),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          if (snapshot.error.toString().contains('FAILED_PRECONDITION')) {
+                            return Center(
+                              child: Text(
+                                'Index is being built, please wait a moment.',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: Colors.black54,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Center(
+                              child: Text(
+                                'An error occurred: ${snapshot.error}',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: Colors.black54,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            );
+                          }
+                        }
+
                         if (snapshot.hasData && snapshot.data != null) {
                           final List<DocumentSnapshot> users =
                               snapshot.data!.docs;
@@ -199,7 +225,8 @@ class AdminDashboardState extends State<AdminDashboard>
                                         return user['registrationNumber'] ??
                                             '';
                                       } else {
-                                        return user['email'] ?? '';
+                                        return user['email'] ??
+                                            '';
                                       }
                                     } catch (e) {
                                       return ''; // Return an empty string in case of an error
@@ -235,6 +262,25 @@ class AdminDashboardState extends State<AdminDashboard>
         ),
       ),
     );
+  }
+
+  Stream<QuerySnapshot> _getFilteredStream() {
+    final collection = _selectedTab == 'staff' ? "staff" : "patients";
+    final role = _selectedTab == 'staff' ? 'staff' : 'patient';
+
+    if (_searchQuery.isEmpty) {
+      return FirebaseFirestore.instance
+          .collection(collection)
+          .where('role', isEqualTo: role)
+          .snapshots();
+    } else {
+      return FirebaseFirestore.instance
+          .collection(collection)
+          .where('role', isEqualTo: role)
+          .where('name', isGreaterThanOrEqualTo: _searchQuery)
+          .where('name', isLessThanOrEqualTo: '$_searchQuery\uf8ff')
+          .snapshots();
+    }
   }
 
   Future<void> _showAddBottomSheet(BuildContext context) async {
@@ -528,12 +574,12 @@ class AdminDashboardState extends State<AdminDashboard>
           ),
           child: Row(
             children: [
-              Builder( // Wrap IconButton with Builder to get the correct context
+              Builder(
                 builder: (BuildContext context) {
                   return IconButton(
                     icon: const Icon(Icons.menu),
                     onPressed: () {
-                      Scaffold.of(context).openDrawer(); // Open the drawer using Scaffold.of(context)
+                      Scaffold.of(context).openDrawer();
                     },
                   );
                 },
@@ -552,5 +598,4 @@ class AdminDashboardState extends State<AdminDashboard>
       ),
     );
   }
-
 }
