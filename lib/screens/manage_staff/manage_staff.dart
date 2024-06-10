@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
 import '../../common/searchbox.dart';
-import '../edit_staff/edit_staff_details.dart';
 
 class ManageStaff extends StatefulWidget {
   const ManageStaff({super.key});
@@ -48,7 +47,8 @@ class _ManageStaffState extends State<ManageStaff> {
               icon: Icons.search,
               onChanged: (value) {
                 setState(() {});
-              }, controller: _searchController,
+              },
+              controller: _searchController,
             ),
             const SizedBox(height: 26.0),
             _buildStaffList(),
@@ -57,7 +57,6 @@ class _ManageStaffState extends State<ManageStaff> {
       ),
     );
   }
-
 
   Widget _buildStaffList() {
     return StreamBuilder<QuerySnapshot>(
@@ -86,6 +85,7 @@ class _ManageStaffState extends State<ManageStaff> {
               final staffData = staff.data() as Map<String, dynamic>;
               final staffName = staffData['name'] ?? '';
               final email = staffData['email'] ?? '';
+              final department = staffData['department'] ?? 'Unknown';
 
               return Card(
                 color: Colors.blueGrey[700],
@@ -97,8 +97,10 @@ class _ManageStaffState extends State<ManageStaff> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 10,),
+                      const SizedBox(height: 10),
                       Text('Email: $email', style: const TextStyle(color: Colors.white)),
+                      const SizedBox(height: 5),
+                      Text('Department: $department', style: const TextStyle(color: Colors.white)),
                     ],
                   ),
                   trailing: Row(
@@ -131,16 +133,22 @@ class _ManageStaffState extends State<ManageStaff> {
 
   void _editStaff(DocumentSnapshot staff) {
     final staffId = staff.id;
-    final name = staff['name'];
-    final email = staff['email'];
+    final staffData = staff.data() as Map<String, dynamic>;
+    final name = staffData['name'];
+    final email = staffData['email'];
+    final department = staffData['department'];
 
-    // Construct the route path with the staffId as a parameter
-    final routePath = '/edit_staff/$staffId';
-
-    context.push(Uri(path: routePath, queryParameters: {'name': name, 'email': email}).toString());
+    context.push(
+      Uri(
+        path: '/edit_staff/$staffId',
+        queryParameters: {
+          'name': name,
+          'email': email,
+          'department': department,
+        },
+      ).toString(),
+    );
   }
-
-
 
   void _deleteStaff(DocumentSnapshot staff) {
     showDialog(
