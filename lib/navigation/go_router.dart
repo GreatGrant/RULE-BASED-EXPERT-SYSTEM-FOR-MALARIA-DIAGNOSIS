@@ -75,14 +75,17 @@ final router = GoRouter(
         final staffId = state.pathParameters['staffId'] ?? '';
         final name = state.uri.queryParameters['name'] ?? '';
         final email = state.uri.queryParameters['email'] ?? '';
-        return EditStaffDetailsPage(staffId: staffId,  name: name, email: email,);
+        final department = state.uri.queryParameters['email'] ?? '';
+
+        return EditStaffDetailsPage(staffId: staffId,  name: name, email: email, department: department,);
       },
       pageBuilder: (context, state) {
         final staffId = state.pathParameters['staffId'] ?? '';
         final name = state.uri.queryParameters['name'] ?? '';
         final email = state.uri.queryParameters['email'] ?? '';
+        final department = state.uri.queryParameters['email'] ?? '';
         return CustomTransitionPage(
-          child: EditStaffDetailsPage(staffId: staffId, name: name, email: email),
+          child: EditStaffDetailsPage(staffId: staffId, name: name, email: email, department: department,),
           transitionsBuilder: _fadeTransition,
         );
       },

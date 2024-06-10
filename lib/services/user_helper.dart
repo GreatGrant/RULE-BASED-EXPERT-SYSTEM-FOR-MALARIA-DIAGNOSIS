@@ -148,12 +148,14 @@ class UserHelper {
     required BuildContext context,
     required String name,
     required String email,
+    required String department,
     required String staffId,
   }) async {
     try {
       await _db.collection('staff').doc(staffId).update({
-        'name': name,
+        'department': department,
         'email': email,
+        'name': name,
         'role': 'staff',
       });
     } on FirebaseException catch (e) {

@@ -1,14 +1,12 @@
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rbes_for_malaria_diagnosis/common/loading_indicator.dart';
-import 'package:rbes_for_malaria_diagnosis/util/show_snackbar.dart';
 import '../../common/custom_tab.dart';
 import '../../common/custom_tabbar_view.dart';
 import '../../common/searchbox.dart';
 import '../../common/user_event_tab_bar_view.dart';
 import '../../models/user_info.dart';
-import '../../services/patient_helper.dart';
+import '../../services/firestore _sservice.dart';
 import '../../services/user_helper.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -24,16 +22,17 @@ class AdminDashboardState extends State<AdminDashboard>
   late TextEditingController _searchController;
   String _selectedTab = 'staff'; // Default selected tab
   String _searchQuery = '';
+  late AdminDashboardService _service;
 
   @override
   void initState() {
     super.initState();
+    _service = AdminDashboardService(context);
     _searchController = TextEditingController();
     _controller = TabController(length: 2, vsync: this);
     _controller!.addListener(() {
       if (_controller!.indexIsChanging) {
         setState(() {
-          // Update the selected tab
           _selectedTab = _controller!.index == 0 ? 'staff' : 'patients';
           _searchQuery = '';
           _searchController.clear();
@@ -154,7 +153,7 @@ class AdminDashboardState extends State<AdminDashboard>
                   const SizedBox(height: 12),
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
-                      stream: _getFilteredStream(),
+                      stream: _service.getFilteredStream(_selectedTab, _searchQuery),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasError) {
@@ -264,25 +263,6 @@ class AdminDashboardState extends State<AdminDashboard>
     );
   }
 
-  Stream<QuerySnapshot> _getFilteredStream() {
-    final collection = _selectedTab == 'staff' ? "staff" : "patients";
-    final role = _selectedTab == 'staff' ? 'staff' : 'patient';
-
-    if (_searchQuery.isEmpty) {
-      return FirebaseFirestore.instance
-          .collection(collection)
-          .where('role', isEqualTo: role)
-          .snapshots();
-    } else {
-      return FirebaseFirestore.instance
-          .collection(collection)
-          .where('role', isEqualTo: role)
-          .where('name', isGreaterThanOrEqualTo: _searchQuery)
-          .where('name', isLessThanOrEqualTo: '$_searchQuery\uf8ff')
-          .snapshots();
-    }
-  }
-
   Future<void> _showAddBottomSheet(BuildContext context) async {
     final TextEditingController firstNameController = TextEditingController();
     final TextEditingController lastNameController = TextEditingController();
@@ -384,7 +364,7 @@ class AdminDashboardState extends State<AdminDashboard>
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              _saveStaffData(
+              _service.saveStaffData(
                 firstNameController.text.trim(),
                 lastNameController.text.trim(),
                 emailController.text.trim(),
@@ -469,7 +449,7 @@ class AdminDashboardState extends State<AdminDashboard>
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              _savePatientData(
+              _service.savePatientData(
                 firstNameController.text.trim(),
                 lastNameController.text.trim(),
                 selectedDate,
@@ -491,76 +471,6 @@ class AdminDashboardState extends State<AdminDashboard>
         ],
       ),
     );
-  }
-
-  void _saveStaffData(
-      String firstName,
-      String lastName,
-      String email,
-      String department,
-      String age,
-      ) async {
-    if (firstName.isNotEmpty && lastName.isNotEmpty && email.isNotEmpty) {
-      await UserHelper.saveStaff(
-        name: '$firstName $lastName',
-        email: email,
-        context: context,
-        department: department,
-        age: age,
-      );
-      // Refresh UI or fetch data again to reflect changes
-    } else {
-      // Show error message
-    }
-  }
-
-  void _savePatientData(
-      String firstName,
-      String lastName,
-      DateTime selectedDate,
-      String result,
-      String age,
-      String gender,
-      ) async {
-    if (firstName.isNotEmpty && lastName.isNotEmpty) {
-      String registrationNo = await generateRegistrationNumber();
-      await PatientHelper.savePatient(
-        firstName: firstName,
-        lastName: lastName,
-        date: selectedDate,
-        registrationNumber: registrationNo,
-        result: result,
-        age: age,
-        gender: gender,
-      );
-      // Refresh UI or fetch data again to reflect changes
-    } else {
-      showSnackBar(context, "Please enter name");
-    }
-  }
-
-  Future<String> generateRegistrationNumber() async {
-    DateTime now = DateTime.now();
-    String year = DateFormat('yy').format(now);
-    String month = DateFormat('MM').format(now);
-    String day = DateFormat('dd').format(now);
-
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('patients')
-        .orderBy('registrationNo', descending: true)
-        .limit(1)
-        .get();
-    int lastRegistrationNo = 0;
-
-    if (snapshot.docs.isNotEmpty) {
-      lastRegistrationNo = snapshot.docs.first.get('registrationNo') as int;
-    }
-
-    int newRegistrationNo = lastRegistrationNo + 1;
-    String paddedNumber = newRegistrationNo.toString().padLeft(4, '0');
-    String registrationNo = '$year/$month/$day$paddedNumber';
-
-    return registrationNo;
   }
 
   PreferredSize buildAppBar(BuildContext context) {
