@@ -67,13 +67,7 @@ class AdminDashboardState extends State<AdminDashboard>
               decoration: BoxDecoration(
                 color: Colors.blueGrey[900],
               ),
-              child: const Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
+              child:  null
             ),
             ListTile(
               leading: Icon(Icons.logout, color: Colors.blueGrey[900]),
