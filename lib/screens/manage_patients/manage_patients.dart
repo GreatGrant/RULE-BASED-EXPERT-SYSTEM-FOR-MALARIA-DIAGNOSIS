@@ -5,8 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rbes_for_malaria_diagnosis/common/loading_indicator.dart';
 import 'package:rbes_for_malaria_diagnosis/services/patient_helper.dart';
-
 import '../../common/searchbox.dart';
+import '../../services/user_helper.dart';
+import '../../util/get_greeting.dart';
 
 class ManagePatients extends StatefulWidget {
   const ManagePatients({super.key});
@@ -26,9 +27,8 @@ class _ManagePatientsState extends State<ManagePatients> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final currentTime = DateTime.now();
-    String greeting = _getGreeting(currentTime.hour);
+    String greeting = getGreeting(currentTime.hour);
     final FirebaseAuth auth = FirebaseAuth.instance;
 
     return Scaffold(
@@ -36,6 +36,15 @@ class _ManagePatientsState extends State<ManagePatients> {
       appBar: AppBar(
         title: const Text('Manage Patients'),
         backgroundColor: Colors.blueGrey[100],
+        actions: [
+          IconButton(
+            onPressed: () {
+              UserHelper.logOut();
+              context.pop();
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
       ),
       body: SingleChildScrollView( // Wrap the body with SingleChildScrollView
         child: Padding(
@@ -45,10 +54,6 @@ class _ManagePatientsState extends State<ManagePatients> {
             children: [
               Text(
                 '$greeting, ${auth.currentUser?.displayName ?? ''}!',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  color: Colors.blueGrey[900],
-                  fontWeight: FontWeight.bold,
-                ),
               ),
               const SizedBox(height: 16.0),
               SearchBox(
@@ -99,7 +104,7 @@ class _ManagePatientsState extends State<ManagePatients> {
               children: [
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(), // Disable scrolling for this ListView
+                  physics: const NeverScrollableScrollPhysics(), // Disable scrolling for this ListView
                   itemCount: filteredPatients.length,
                   itemBuilder: (context, index) {
                     final patient = filteredPatients[index];
@@ -223,17 +228,6 @@ class _ManagePatientsState extends State<ManagePatients> {
         }
       },
     );
-  }
-
-
-  String _getGreeting(int hour) {
-    if (hour < 12) {
-      return 'Good morning';
-    } else if (hour < 18) {
-      return 'Good afternoon';
-    } else {
-      return 'Good evening';
-    }
   }
 
   void _deletePatient(String patientId) {

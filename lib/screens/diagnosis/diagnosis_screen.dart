@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/services/patient_helper.dart';
 import 'package:rbes_for_malaria_diagnosis/services/user_helper.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import '../../services/diagnosis_result.dart';
+import '../../util/malaria_diagnosis_chart.dart';
 
 class DiagnosisScreen extends StatefulWidget {
   final String patientId;
@@ -15,11 +17,7 @@ class DiagnosisScreenState extends State<DiagnosisScreen> {
   String diagnosisResult = 'Unknown';
   double diagnosisProbability = 0.0;
   List<String> selectedSymptoms = [];
-  List<String> allSymptoms = [
-    'Fever', 'Chills', 'Headache', 'Nausea', 'Cough', 'Sore throat', 'Muscle Aches',
-    'Fatigue', 'Vomiting', 'Diarrhea', 'Sweating', 'Weakness', 'Loss of Appetite',
-    'Dizziness', 'Abdominal Pain', 'Jaundice', 'Rapid Heart Rate',
-  ];
+  List<String> allSymptoms = DiagnosisService.getAllSymptoms();
 
   void _toggleSymptom(String symptom) {
     setState(() {
@@ -32,7 +30,7 @@ class DiagnosisScreenState extends State<DiagnosisScreen> {
   }
 
   void _startDiagnosis() {
-    DiagnosisResult result = diagnoseMalaria(selectedSymptoms);
+    DiagnosisResult result = DiagnosisService.diagnoseMalaria(selectedSymptoms);
     setState(() {
       diagnosisResult = result.diagnosis;
       diagnosisProbability = result.probability;
@@ -104,14 +102,6 @@ class DiagnosisScreenState extends State<DiagnosisScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Malaria Diagnosis'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              UserHelper.logOut();
-            },
-            icon: const Icon(Icons.logout, color: Colors.white),
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -165,94 +155,4 @@ class DiagnosisScreenState extends State<DiagnosisScreen> {
       ),
     );
   }
-}
-
-class DiagnosisResult {
-  final String diagnosis;
-  final double probability;
-
-  DiagnosisResult(this.diagnosis, this.probability);
-}
-
-DiagnosisResult diagnoseMalaria(List<String> symptoms) {
-  String diagnosis = 'Unknown';
-  double probability = 0.0;
-
-  Map<List<String>, Map<String, double>> rules = {
-    ['Fever', 'Chills', 'Headache', 'Nausea', 'Muscle Aches', 'Fatigue', 'Vomiting']: {'Malaria': 0.9},
-    ['Fever', 'Chills', 'Headache', 'Nausea', 'Muscle Aches', 'Fatigue']: {'Possible Malaria': 0.85},
-    ['Fever', 'Chills', 'Headache', 'Nausea', 'Muscle Aches']: {'Possible Malaria': 0.7},
-    ['Fever', 'Chills', 'Headache', 'Nausea']: {'Possible Malaria': 0.65},
-    ['Fever', 'Chills', 'Headache']: {'Possible Malaria': 0.6},
-    ['Headache']: {'Migraine': 0.8},
-    ['Fever', 'Headache']: {'Possible Cold': 0.5},
-    ['Fever', 'Muscle Aches', 'Fatigue']: {'Flu': 0.7},
-    ['Fatigue']: {'Fatigue Syndrome': 0.6},
-    ['Fever', 'Headache', 'Vomiting']: {'Gastroenteritis': 0.6},
-    ['Fever', 'Muscle Aches']: {'Dengue Fever': 0.7},
-    ['Fever', 'Chills', 'Muscle Aches']: {'Typhoid Fever': 0.8},
-    ['Chills', 'Headache']: {'Flu': 0.6},
-    ['Fever', 'Chills', 'Muscle Aches', 'Fatigue']: {'Influenza': 0.8},
-    ['Chills', 'Muscle Aches']: {'Common Cold': 0.6},
-    ['Fever', 'Nausea', 'Vomiting']: {'Stomach Flu': 0.7},
-    ['Vomiting', 'Diarrhea']: {'Food Poisoning': 0.8},
-    ['Fever', 'Sweating']: {'Heat Exhaustion': 0.6},
-    ['Sweating']: {'Hyperhidrosis': 0.7},
-    ['Fever', 'Diarrhea']: {'Possible Food Poisoning': 0.5},
-    ['Diarrhea']: {'Gastrointestinal Infection': 0.6},
-    ['Muscle Aches']: {'Muscle Strain': 0.6},
-    ['Fever', 'Chills', 'Headache', 'Fatigue', 'Sweating']: {'Possible Malaria': 0.75},
-    ['Fever', 'Chills', 'Headache', 'Muscle Aches', 'Sweating']: {'Possible Malaria': 0.8},
-    ['Fever', 'Chills', 'Headache', 'Fatigue', 'Loss of Appetite']: {'Possible Malaria': 0.7},
-    ['Fever', 'Chills', 'Headache', 'Fatigue', 'Rapid Heart Rate']: {'Possible Malaria': 0.7},
-    ['Fever', 'Chills', 'Headache', 'Nausea', 'Dizziness']: {'Possible Malaria': 0.65},
-    ['Fever', 'Chills', 'Headache', 'Nausea', 'Abdominal Pain']: {'Possible Malaria': 0.65},
-    ['Fever', 'Chills', 'Headache', 'Nausea', 'Jaundice']: {'Possible Malaria': 0.8},
-    ['Fever', 'Chills', 'Headache', 'Nausea', 'Weakness']: {'Possible Malaria': 0.7},
-  };
-
-  for (var entry in rules.entries) {
-    List<String> symptomsCombination = entry.key;
-    Map<String, double> diagnosisInfo = entry.value;
-
-    if (symptoms.every((symptom) => symptomsCombination.contains(symptom))) {
-      probability = diagnosisInfo.values.first * (symptoms.length / symptomsCombination.length);
-      diagnosis = diagnosisInfo.keys.first;
-      break;
-    }
-  }
-
-  return DiagnosisResult(diagnosis, probability);
-}
-
-class MalariaDiagnosisChart extends StatelessWidget {
-  final double probability;
-
-  const MalariaDiagnosisChart({Key? key, required this.probability}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SfCircularChart(
-      title: ChartTitle(text: 'Diagnosis Result'),
-      legend: Legend(isVisible: true),
-      series: <DoughnutSeries<ChartSampleData, String>>[
-        DoughnutSeries<ChartSampleData, String>(
-          dataSource: [
-            ChartSampleData(x: 'Malaria', y: probability * 100),
-            ChartSampleData(x: 'Other', y: 100 - (probability * 100)),
-          ],
-          xValueMapper: (ChartSampleData data, _) => data.x as String,
-          yValueMapper: (ChartSampleData data, _) => data.y,
-          dataLabelSettings: const DataLabelSettings(isVisible: true),
-        ),
-      ],
-    );
-  }
-}
-
-class ChartSampleData {
-  final String x;
-  final double y;
-
-  ChartSampleData({required this.x, required this.y});
 }
