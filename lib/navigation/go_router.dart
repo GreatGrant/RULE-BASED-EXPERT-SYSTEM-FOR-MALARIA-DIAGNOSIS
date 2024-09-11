@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/admin_dashboard/admin_dashboard.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/diagnosis/diagnosis_screen.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/forgot_password/forgot_password_page.dart';
+import 'package:rbes_for_malaria_diagnosis/screens/sign_up/sign_up_screen.dart';
 import '../screens/edit_staff/edit_staff_details.dart';
 import '../screens/home/login_signup_screen.dart';
 import '../screens/manage_patients/manage_patients.dart';
@@ -17,7 +18,7 @@ final router = GoRouter(
       builder: (context, state) => const LoginSignUpScreen(title: "Welcome"),
       pageBuilder: (context, state) {
         return const CustomTransitionPage(
-          child: LoginSignUpScreen(title: "Welcome"),
+          child: SignupScreen(),
           transitionsBuilder: _fadeTransition,
         );
       },
