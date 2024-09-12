@@ -9,17 +9,40 @@ import '../screens/home/login_signup_screen.dart';
 import '../screens/manage_patients/manage_patients.dart';
 import '../screens/manage_staff/manage_staff.dart';
 import '../screens/patient_overview/patients_overview_screen.dart';
+import '../screens/sign_in_screen/sign_in_screen.dart';
 import '../screens/staff_overview/staff_overview_screen.dart';
 
 final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const LoginSignUpScreen(title: "Welcome"),
+      builder: (context, state) => const SignInScreen(),
+      pageBuilder: (context, state) {
+        return const CustomTransitionPage(
+          child: SignInScreen(),
+          transitionsBuilder: _fadeTransition,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/sign-up',
+      name: 'sign-up',
+      builder: (context, state) => const SignInScreen(),
       pageBuilder: (context, state) {
         return const CustomTransitionPage(
           child: SignupScreen(),
-          transitionsBuilder: _fadeTransition,
+          transitionsBuilder: _slideTransition,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/sign-in',
+      name: 'sign-in',
+      builder: (context, state) => const SignInScreen(),
+      pageBuilder: (context, state) {
+        return const CustomTransitionPage(
+          child: SignInScreen(),
+          transitionsBuilder: _slideTransition,
         );
       },
     ),

@@ -2,28 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -41,7 +35,7 @@ class _SignupScreenState extends State<SignupScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  'Sign Up',
+                  'Sign In',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -49,22 +43,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                _buildTextField(
-                  controller: _firstNameController,
-                  label: 'First Name',
-                  icon: Icons.person,
-                  validator: (value) =>
-                  value!.isEmpty ? 'First name is required' : null,
-                ),
-                const SizedBox(height: 20),
-                _buildTextField(
-                  controller: _lastNameController,
-                  label: 'Last Name',
-                  icon: Icons.person_outline,
-                  validator: (value) =>
-                  value!.isEmpty ? 'Last name is required' : null,
-                ),
-                const SizedBox(height: 20),
                 _buildTextField(
                   controller: _emailController,
                   label: 'Email',
@@ -96,22 +74,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
-                _buildTextField(
-                  controller: _confirmPasswordController,
-                  label: 'Confirm Password',
-                  icon: Icons.lock_outline,
-                  obscureText: true,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please confirm your password';
-                    }
-                    if (value != _passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
-                ),
                 const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
@@ -139,10 +101,18 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 20),
                 TextButton(
                   onPressed: () {
-                    // Navigate to Sign In Screen
-                    context.go('/sign-in'); // Ensure the route exists
+                    // Navigate to Forgot Password Screen
+                    context.go('/forgot-password'); // Ensure the route exists
                   },
-                  child: const Text('Already have an account? Sign In'),
+                  child: const Text('Forgot Password?'),
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    // Navigate to Sign Up Screen
+                    context.go('/sign-up');
+                  },
+                  child: const Text('Don\'t have an account? Sign Up'),
                 ),
               ],
             ),
