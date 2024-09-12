@@ -5,7 +5,6 @@ import 'package:rbes_for_malaria_diagnosis/screens/diagnosis/diagnosis_screen.da
 import 'package:rbes_for_malaria_diagnosis/screens/forgot_password/forgot_password_page.dart';
 import 'package:rbes_for_malaria_diagnosis/screens/sign_up/sign_up_screen.dart';
 import '../screens/edit_staff/edit_staff_details.dart';
-import '../screens/home/login_signup_screen.dart';
 import '../screens/manage_patients/manage_patients.dart';
 import '../screens/manage_staff/manage_staff.dart';
 import '../screens/patient_overview/patients_overview_screen.dart';
