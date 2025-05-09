@@ -1,16 +1,12 @@
-# rbes_for_malaria_diagnosis
+# Malaria Diagnosis App
 
-A new Flutter project.
+This Flutter application allows users to input symptoms and get a diagnosis for malaria based on those symptoms. It uses a rule-based system to determine the likelihood of malaria, displaying both the diagnosis result and a probability score. Additionally, the app shows a chart to visually represent the diagnosis probability. The app also integrates Firebase for user authentication and role-based access control.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Symptom Selection**: Users can select multiple symptoms from a predefined list.
+- **Diagnosis Calculation**: Based on selected symptoms, the app calculates the probability of malaria using a rule-based logic.
+- **Diagnosis Result**: The app displays the diagnosis and its associated probability as a percentage.
+- **Interactive Doughnut Chart**: A chart that visually shows the probability of malaria and other possible diagnoses.
+- **User Authentication**: Firebase Authentication is used for user sign-in and sign-up.
+- **Role-Based Access**: Firebase Firestore is used to manage user roles (e.g., Attendant, Admin) to control access to different parts of the app.
